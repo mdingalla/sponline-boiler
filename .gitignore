@@ -1,0 +1,15 @@
+
+.vscode
+.DS_STORE
+node_modules
+.module-cache
+*.log*
+build
+dist
+cerreport
+config.json
+package-lock.
+*.wsp
+redux-devtools
+spconfig.json
+package-lock.json
