@@ -16,7 +16,7 @@ const isTest = appconfig.isTest;
 const subfolder = appconfig.folder;
 const appdir = subfolder
 
-const outPath = Path.join(__dirname, `./dist${subfolder}`);
+const outPath = Path.join(__dirname, `./dist/${subfolder}`);
 const sourcePath = Path.join(__dirname, './src');
 
 
@@ -61,7 +61,7 @@ module.exports = {
   },
   output: {
     path: outPath,
-    publicPath:`/legal/SiteAssets/${appdir}`,
+    publicPath:`./../SiteAssets/${appdir}`,
     filename: '[chunkhash].bundle.js',
   },
   target: 'web',
@@ -186,28 +186,10 @@ module.exports = {
       inject: 'body',
       // template: require('html-webpack-template'),
 
-      // template: './template/app.html', //if main
-      // filename: 'MainApp.aspx' //only
+      template: './template/app.html', //if main
+      filename: 'app.html' //only
 
-      // cashadvance
-      // template: isPTC ? './template/app.html' : './template/cashadvance.html', //if main
-      // filename: isPTC ? 'MainApp.aspx' :'CashAdvance.aspx' //only
-
-      //nontrade amin
-      // template: isPTC ? './template/app.html' : './template/cashadvance.html', //if main
-      // filename: isPTC ? 'MainApp.aspx' : 'NonTradeAdmin.aspx' //only
-
-      //ptc mass upload
-      // template: isPTC ? './template/app.html' : './template/ptcmassupload.html', //if main
-      // filename: isPTC ? 'MainApp.aspx' : 'PTCMassUpload.aspx' //only
-
-       //ptc mass approve
-      //  template: isPTC ? './template/app.html' : './template/ptcmassupload.html', //if main
-      //  filename: isPTC ? 'MainApp.aspx' : 'PTCMassApprove.aspx' //only
-
-      //ptc gl report
-      template: isPTC ? './template/app.html' : './template/glreport.html', //if main
-      filename: isPTC ? 'MainApp.aspx' : 'GLReport.aspx' //only
+   
 
       // template:'./template/ptc.html',
       // filename:'ptcnext.html'

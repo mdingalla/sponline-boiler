@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
       "sourceMap": true,
+      "typeRoots": [ "node_modules/@types/" ],
       "target": "es5",
       "jsx": "react",
       "module": "commonjs",

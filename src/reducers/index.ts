@@ -8,7 +8,8 @@ import { combineReducers, Reducer } from 'redux';
 
 import {routerReducer, RouterState} from 'react-router-redux';
 // import { CERRecord, TodoStoreState, AppProfile, DashboardModel, PettyCashView, LocalizedData, AppConfig } from '../../types/models';
-// import appconfig from './appconfig';
+import appconfig from './appconfig';
+import { AppConfig } from '../../types/models';
 
 
 
@@ -19,7 +20,7 @@ interface RootState {
 //   dashboard:DashboardModel;
 //   ptc:PettyCashView;
 //   locale:LocalizedData;
-//   appconfig:AppConfig;
+  appconfig:AppConfig;
 }
 
 
@@ -28,5 +29,5 @@ export const rootReducer: Reducer<RootState> = combineReducers<RootState>({
 //   dashboard:dashboard,
 //   ptc:ptc,
 //   locale:locale,
-//   appconfig:appconfig
+  appconfig:appconfig
 });

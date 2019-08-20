@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
-// import Dashboard from '../containers/Dashboard';
+import Dashboard from '../containers/Dashboard';
 import {pagePath} from '../constants/config';
 import { withRouter } from 'react-router';
 import travelWrapper from '../components/TravelHOC';
@@ -14,7 +14,7 @@ import travelWrapper from '../components/TravelHOC';
 {/* <div className="container-fluid"> */}
 const AppRoutes = ()=>  (
                     <Switch>
-                        {/* <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} /> */}
+                        <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
                         {/* <Route  path={`${pagePath}/new`} component={withRouter(travelWrapper(PettyCashContainer))} />
                         <Route  path={`${pagePath}/unauthorized`} component={withRouter(travelWrapper(NoAccessContainer))} />
                         <Route  path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(PettyCashContainer))} />
