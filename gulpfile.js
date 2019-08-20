@@ -9,14 +9,15 @@ var vfs = require('vinyl-fs');
 var map = require('map-stream');
 var appconfig = require('./config/app.json')
 var isTest = appconfig.isTest;
-var isPTC = appconfig.isPTC;
+const subfolder = appconfig.folder;
+
 var spusername = config.username;
 var sppassword = config.password;
 var spSiteUrl = 'https://interplexgroup.sharepoint.com/sites/Region/Corp/legal';
 
 var spRootUrl = 'https://interplexgroup.sharepoint.com';
 var spPageFolder = 'Pages';
-const subfolder='test';
+
 var spSiteAssetsFolder = `SiteAssets`;
 
 
