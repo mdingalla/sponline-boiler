@@ -1,5 +1,7 @@
 import { ReactSelectValue } from "../../types/models";
 
+export const SPOnPremise = `https://iconnect.interplex.com`;
+
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 export const CashAdvancePagePath =

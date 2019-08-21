@@ -15,6 +15,7 @@ import "!style-loader!css-loader!./override.css";
 // import * as PTCActions from "../../actions/ptc";
 import DashboardPage from "../../components/Dashboard";
 import { Toggle } from "office-ui-fabric-react/lib/Toggle";
+import ContractForm from "../../components/ContractForm";
 
 export namespace Dashboard {
   export interface Props extends RouteComponentProps<void> {
@@ -67,7 +68,8 @@ class Dashboard extends React.Component<Dashboard.Props, Dashboard.State> {
     return (
       <div className="row-fluid">
        
-        <DashboardPage {...this.props} />
+        {/* <DashboardPage {...this.props} /> */}
+        <ContractForm {...this.props} />
         {children}
       </div>
     );

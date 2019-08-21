@@ -1,6 +1,9 @@
 require("./polyfill");
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+
+// import { SPFetchClient } from "@pnp/nodejs";
+
 import { Provider } from "react-redux";
 import { createBrowserHistory } from "history";
 import { configureStore } from "./store";
@@ -14,10 +17,14 @@ import "!style-loader!css-loader!./index.css";
 import "!style-loader!css-loader!./sb-admin.css";
 import "!style-loader!css-loader!./fabric.scss";
 
+
 const history = createBrowserHistory();
 const store = configureStore();
 
 initializeIcons();
+
+
+
 
 setTimeout(() => {
   ReactDOM.render(
