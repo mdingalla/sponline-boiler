@@ -462,7 +462,15 @@ type PTCMassUploadStatus =
   | 'Error'
   | 'Processing'
   
+  declare type Customer = "Customer";
+  declare type Vendor = "Vendor";
+  declare type Entity = "Entity";
+  declare type Others = "Others"
   
+  type ContractClassification =
+   Customer | Vendor | Entity | Others
+
+
 
 type Methods =
   | 'log'
@@ -523,4 +531,11 @@ declare interface HandPhonePTCItem {
   id?:number;
   value?:ReactSelectValue;
   ptcid?:number;
+}
+
+
+declare interface CounterParty {
+  Classification?:ContractClassification,
+  PartyName?:string;
+  Nature?:string;
 }

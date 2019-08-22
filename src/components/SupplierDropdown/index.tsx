@@ -5,27 +5,6 @@ import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
 
-sp.setup({
-  sp: {
-    headers: {
-      Accept: "application/json;odata=verbose",
-    },
-    baseUrl: SPOnPremise,
-
-  },
-});
-
-let sitecolweb = new Web(SPOnPremise).configure({
-    credentials: 'include',
-                cache: 'no-cache',
-                mode: 'cors',
-                headers: {
-                    Accept: 'application/json;odata=verbose',
-                    // 'Content-Type': 'application/json', // will fail if provided
-                    // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-                }
-})
-
 
 
 

@@ -14,7 +14,6 @@ sp.setup({
     headers: {
       Accept: "application/json;odata=verbose",
     },
-    baseUrl: SPOnPremise,
 
   },
 });
@@ -183,12 +182,71 @@ interface SPClientPeoplePickerElement extends Element {
     let endpointUrl = `${_spPageContextInfo.siteServerRelativeUrl}/_api/SP.UI.ApplicationPages.ClientPeoplePickerWebServiceInterface.clientPeoplePickerSearchUser`.replace(/\/\//g, '/');
     if (filterText) {
       let myheaders = new Headers();
-        myheaders.append('Content-Type','application/json;odata=verbose');
+        // myheaders.append('Content-Type','application/json;odata=verbose');
         myheaders.append('Accept','application/json;odata=verbose');
       return new SPHttpClient()
       .post(endpointUrl,{
         headers: {
-          Accept: `application/json; odata=verbose`
+          // Accept: `application/json; odata=verbose`
+        },
+        body: JSON.stringify({
+          queryParams: {
+            __metadata: {
+              type: 'SP.UI.ApplicationPages.ClientPeoplePickerQueryParameters'
+            },
+            AllowEmailAddresses: true,
+            AllowMultipleEntities: true,
+            AllUrlZones: false,
+            MaximumEntitySuggestions: 50,
+            PrincipalSource: 15,
+            PrincipalType: 15,
+            QueryString: filterText
+          }
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        let results = JSON.parse(data.d.ClientPeoplePickerSearchUser).filter((p)=> {return p.EntityType == 'User'}).map((item,idx)=>{
+          return {
+            key: item.Key,
+            // id: item.
+            //  key: idx,
+            // imageUrl: item.Picture,
+            imageInitials: this.getInitial(item.DisplayText),
+            text: item.DisplayText,
+            primaryText: item.DisplayText,
+            secondaryText: item.EntityData.Title,
+            tertiaryText: item.EntityData.Department || item.DisplayText,
+            optionalText: item.EntityData.Department || item.DisplayText
+          }
+        });
+
+        // console.log(results);
+        return this._convertResultsToPromise(results);
+      });
+      
+    }
+    else {
+      return this._convertResultsToPromise([]);
+    }
+    
+  }
+
+
+  @autobind
+  private ClientPeoplePickerSearchUser(filterText: string, currentPersonas: IPersonaProps[], limitResults?: number){
+    // let searchString = 'andrew';
+
+
+    let endpointUrl = `${_spPageContextInfo.siteServerRelativeUrl}/_api/SP.UI.ApplicationPages.ClientPeoplePickerWebServiceInterface.clientPeoplePickerSearchUser`.replace(/\/\//g, '/');
+    if (filterText) {
+      let myheaders = new Headers();
+        // myheaders.append('Content-Type','application/json;odata=verbose');
+        myheaders.append('Accept','application/json;odata=verbose');
+      return new SPHttpClient()
+      .post(endpointUrl,{
+        headers: {
+          // Accept: `application/json; odata=verbose`
         },
         body: JSON.stringify({
           queryParams: {

@@ -1,24 +1,17 @@
-import { ReactSelectValue } from "../../types/models";
+import { ReactSelectValue, ContractClassification } from "../../types/models";
 
 export const SPOnPremise = `https://iconnect.interplex.com`;
 
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
-export const CashAdvancePagePath =
-  _spPageContextInfo.webServerRelativeUrl + "/SitePages/CashAdvance.aspx";
-export const PTCMassUploadPagePath =
-  _spPageContextInfo.webServerRelativeUrl +
-  "/SitePages/ptcmassupload/PTCMassUpload.aspx";
 
-  export const PTCMassApprovePagePath =
-  _spPageContextInfo.webServerRelativeUrl +
-  "/SitePages/ptcmassupload/PTCMassApprove.aspx";
+export const ContractClassTypes:ContractClassification[] = [
+  "Vendor",
+  "Customer",
+  "Entity",
+  "Others"
+]
 
-  export const GLReportPagePath =
-  _spPageContextInfo.webServerRelativeUrl +
-  "/SitePages/newglreport/GLReport.aspx";
-
-export const PTCNextWorkflowName = "PTCNext Approval";
 
 
 export const DayPickerStrings = {

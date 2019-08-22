@@ -1,4 +1,7 @@
 {
-  "siteUrl": "https://interplexgroup.sharepoint.com/sites/Region/Corp/legal"
- 
+  "siteUrl": "https://interplexgroup.sharepoint.com/sites/Region/Corp/legal",
+  "strategy": "UserCredentials",
+  "username": "mark.ingalla@sg.interplex.com",
+  "password": "adafaafdf5c2d3ea39fda718994f87f93ea4cec798c74ee1390a91f38a7c98e75d8e0d571089773f5be333bd675dec6051N7GohKo3iaCZ++qKKjvucVyX0LTSv7hEdDtubSZOU=",
+  "online": true
 }

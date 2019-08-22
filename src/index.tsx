@@ -37,4 +37,11 @@ setTimeout(() => {
     </Provider>,
     document.getElementById("root")
   );
+
+
+  ReactDOM.render(
+    <div>
+      <h4 className="page-header">Contract</h4>
+    </div>
+  ,document.getElementById('pageTitle'))
 }, 500);

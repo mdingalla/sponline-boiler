@@ -4,29 +4,7 @@ import  {Select,Async,Creatable,AsyncCreatable}  from 'react-select/lib';
 import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
-
-sp.setup({
-  sp: {
-    headers: {
-      Accept: "application/json;odata=verbose",
-    },
-    baseUrl: SPOnPremise,
-
-  },
-});
-
-let sitecolweb = new Web(SPOnPremise).configure({
-    credentials: 'include',
-                cache: 'no-cache',
-                mode: 'cors',
-                headers: {
-                    Accept: 'application/json;odata=verbose',
-                    // 'Content-Type': 'application/json', // will fail if provided
-                    // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-                }
-})
-
-
+import * as _ from 'lodash';
 
 
 export namespace EntityDropdown {
@@ -78,7 +56,7 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-          let filter = input && input.length > 0 ? " Title eq '" + input + "' or substringof('" + input + "',Description)" : "";
+          let filter = input && input.length > 0 ? " EntityName eq '" + input + "' or substringof('" + input + "',EntityName)" : "";
             
 
             fetch(`${SPOnPremise}/_api/web/lists/getbytitle('PlantMaster')/items?$filter=${filter}`,{
@@ -94,8 +72,17 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
             })
             .then(r => r.json())
             .then((data)=>{
-                let results = data.d.results.map((item)=>{
-                    return { value: item.Id, label:`${item.Title} - ${item.Description}`}
+
+                let entities:any[] = data.d.results.map((i)=>{
+                    return {
+                        CompanyCode:i.CompanyCode,
+                        EntityName:i.EntityName
+                    }
+                })
+                let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
+                
+                let results = x.map((item)=>{
+                    return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
                   });
                   callback(null, {
                       options: results,

@@ -1,30 +1,30 @@
 import * as React from 'react';
-import { taxonomy, ITermStore, ITermGroup, ITermSet, ITermSetData, ITermGroupData, ILabelMatchInfo } from "@pnp/sp-taxonomy";
+// import { taxonomy, ITermStore, ITermGroup, ITermSet, ITermSetData, ITermGroupData, ILabelMatchInfo } from "@pnp/sp-taxonomy";
 import * as ReactDOM from 'react-dom';
 import  {Select,Async,Creatable,AsyncCreatable}  from 'react-select/lib';
 import 'react-select/dist/react-select.css';
 import { sp,Web, SortDirection } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
+import SPOnlineTermStore from '../../api/SPOnlineTermStore';
 
-sp.setup({
-  sp: {
-    headers: {
-      Accept: "application/json;odata=verbose",
-    },
+// sp.setup({
+//   sp: {
+//     headers: {
+//       Accept: "application/json;odata=verbose",
+//     },
 
-  },
-});
+//   },
+// });
 
-let myWeb = new Web(_spPageContextInfo.webAbsoluteUrl);
 
-taxonomy.setup({
-    sp: {
-        headers: {
-          Accept: "application/json;odata=verbose",
-        },
-    
-      },
-})
+// taxonomy.setup({
+//     sp: {
+//         headers: {
+//           Accept: "application/json;odata=verbose",
+//         },
+//         baseUrl:"https://interplexgroup.sharepoint.com/sites/Region/Corp/legal"
+//       }
+// })
 
 
 export namespace DepartmentTermStoreDropdown {
@@ -57,14 +57,15 @@ class DepartmentTermStoreDropdown extends React.Component<DepartmentTermStoreDro
         
         setTimeout(function() {
 
-            const labelMatchInfo: ILabelMatchInfo = {
-                TermLabel: input,
-                TrimUnavailable: true,
-            };
+            // const labelMatchInfo: ILabelMatchInfo = {
+            //     TermLabel: input,
+            //     TrimUnavailable: true,
+            // };
           
-            const store: ITermStore = taxonomy.termStores.getByName("Taxonomy_+fbatXz7iODpxN/jrdHNtA==");
-           const group =  store.getTermGroupById("30de891f-4b97-45ef-b143-95a6e3a75c0e");
-           group.termSets.getById("8ed8c9ea-7052-4c1d-a4d7-b9c10bffea6f").terms.get()
+        //     const store: ITermStore = taxonomy.termStores.getByName("Taxonomy_+fbatXz7iODpxN/jrdHNtA==");
+        //    const group =  store.getTermGroupById("30de891f-4b97-45ef-b143-95a6e3a75c0e");
+        //    group.termSets.getById("8ed8c9ea-7052-4c1d-a4d7-b9c10bffea6f").terms.get()
+        SPOnlineTermStore.GetDepartment()
             // store.getTerms(labelMatchInfo).get()
             .then((data)=>{
                 // console.log(x)

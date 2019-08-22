@@ -161,9 +161,9 @@ label {
   float: none;
 }
 
-#pageTitle {
+/* #pageTitle {
   display: none;
-}
+} */
 
 .overflowhidden {
   overflow: hidden;

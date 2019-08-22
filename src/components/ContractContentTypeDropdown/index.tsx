@@ -52,7 +52,7 @@ class ContractContentTypesDropdown extends React.Component<ContractContentTypesD
           .contentTypes.get();
           
           ct.then((data)=>{
-              console.log(data)
+            //   console.log(data)
               let results = data.map((item)=>{
                 return { value: item.StringId, label:`${item.Name}`}
               });
