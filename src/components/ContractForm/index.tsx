@@ -154,6 +154,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
       />
 
         return <div className="row">
+            <h4 className="pageTitle">Contract Meta Data</h4>
             <div className="col-md-12">
                 <div className="form form-horizontal">
 

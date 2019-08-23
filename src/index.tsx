@@ -41,7 +41,7 @@ setTimeout(() => {
 
   ReactDOM.render(
     <div>
-      <h4 className="page-header">Contract</h4>
+      <h4 className="page-header">Legal Repository</h4>
     </div>
   ,document.getElementById('pageTitle'))
 }, 500);

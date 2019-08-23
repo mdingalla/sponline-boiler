@@ -16,6 +16,9 @@ const isTest = appconfig.isTest;
 const subfolder = appconfig.folder;
 const appdir = subfolder
 
+var privateconfig = require('./config/private.json');
+const siteUrl = privateconfig.siteUrl;
+
 const outPath = Path.join(__dirname, `./dist/${subfolder}`);
 const sourcePath = Path.join(__dirname, './src');
 
@@ -61,7 +64,7 @@ module.exports = {
   },
   output: {
     path: outPath,
-    publicPath:`./../SiteAssets/${appdir}`,
+    publicPath:`${siteUrl}/SiteAssets/${appdir}`,
     filename: '[chunkhash].bundle.js',
   },
   target: 'web',
