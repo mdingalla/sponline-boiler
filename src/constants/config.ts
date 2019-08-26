@@ -5,11 +5,16 @@ export const SPOnPremise = `https://iconnect.interplex.com`;
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 
+export const Vendor = "Vendor";
+export const Customer ="Customer";
+export const Entity = "Entity";
+export const Others = "Others";
+
 export const ContractClassTypes:ContractClassification[] = [
-  "Vendor",
-  "Customer",
-  "Entity",
-  "Others"
+  Vendor,
+  Customer,
+  Entity,
+  Others
 ]
 
 

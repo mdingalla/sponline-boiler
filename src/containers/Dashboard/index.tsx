@@ -16,10 +16,12 @@ import "!style-loader!css-loader!./override.css";
 import DashboardPage from "../../components/Dashboard";
 import { Toggle } from "office-ui-fabric-react/lib/Toggle";
 import ContractForm from "../../components/ContractForm";
+import { AppConfig, ContractFormView } from "../../../types/models";
 
 export namespace Dashboard {
   export interface Props extends RouteComponentProps<void> {
-    // appconfig: AppConfig;
+    appconfig: AppConfig;
+    contract: ContractFormView;
     // dashboardactions: typeof DashboardActions;
     // ptcactions: typeof PTCActions;
     // dashboard: DashboardModel;
@@ -81,7 +83,8 @@ function mapStateToProps(state: RootState) {
     // dashboard: state.dashboard,
     // profile: state.profile,
     // locale: state.locale,
-    // appconfig: state.appconfig
+    appconfig: state.appconfig,
+    contract:state.contract
   };
 }
 

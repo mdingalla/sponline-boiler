@@ -6,7 +6,7 @@ import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
 import { EmptyReactSelectValue, DayPickerStrings } from "../../constants/config";
-import { ReactSelectValue, CounterParty } from "../../../types/models";
+import { ReactSelectValue, CounterParty, AppConfig, ContractFormView } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
@@ -17,6 +17,7 @@ import "!style-loader!css-loader!./index.css";
 import CounterPartyControl from "../CounterPartyControl";
 import * as Modal from "react-bootstrap/lib/Modal";
 import CounterPartyDialog from "../CounterPartyDialog";
+import FileUploads from "../FileUploads";
 
 interface ModalReloadProps {
     showmodal: boolean;
@@ -37,26 +38,29 @@ const ContractingPartiesModal = (props: ModalReloadProps) => (
       <Modal.Header closeButton>
         <Modal.Title>Counter Party</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <CounterPartyDialog />
+      <CounterPartyDialog OnClose={props.OnClose}
+       OnSelect={props.OnSave} />
+      {/* <Modal.Body>
+       
       </Modal.Body>
       <Modal.Footer>
         <div />
-      </Modal.Footer>
+      </Modal.Footer> */}
     </Modal>
   );
 
 
 export namespace ContractForm {
     export interface Props extends RouteComponentProps<void> {
-
+        appconfig: AppConfig;
+        contract: ContractFormView;
     }
 
     export interface State {
         classification?:ReactSelectValue;
         category?:ReactSelectValue;
         contentTypes?:ReactSelectValue;
-        department?:any;
+        department?:ReactSelectValue;
         entity?:ReactSelectValue;
         effectiveDate?:any;
         expiryDate?:any;
@@ -65,7 +69,8 @@ export namespace ContractForm {
         owner?: IPersonaProps[];
         counterparties?:CounterParty[];
         showModal:boolean;
-        selectedCounterPartyId?:number
+        selectedCounterPartyId?:number;
+        upFiles:any[]
     }
 }
 
@@ -76,26 +81,38 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
         this.handleModalOk = this.handleModalOk.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleUPFiles = this.handleUPFiles.bind(this);
+
+        const {contract} = this.props;
 
         this.state = {
-            classification:EmptyReactSelectValue,
-            category:EmptyReactSelectValue,
-            contentTypes:EmptyReactSelectValue,
-            department:"",
-            owner:[],
-            counterparties:[{}],
-            entity:EmptyReactSelectValue,
+            classification:contract.relationship,
+            category:contract.category,
+            contentTypes:contract.contractTypes,
+            department:contract.function,
+            owner:contract.owner,
+            counterparties:contract.counterparties,
+            entity:contract.contractingEntity,
             showModal:false,
-            selectedCounterPartyId:null
+            selectedCounterPartyId:null,
+            upFiles:[]
         }
     }
 
 
     handleModalOk(e) {
+        console.log(e)
         !this.isCancelled &&
           this.setState(
             {
-              
+              counterparties:this.state.counterparties.concat([
+                  {
+                      Classification:e.classification,
+                      Nature:'',
+                      PartyName:e.value,
+
+                  }
+              ])
             },
             () => {
                 !this.isCancelled &&
@@ -113,10 +130,20 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         });
       }
 
+      handleUPFiles(files) {
+        this.setState({
+            upFiles:files
+        })
+      }
+
     render(){
-        
+        const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0].PartyName : null;
+
         const primaryCounterParty =  <div className="form-group">
-            <CounterPartyControl classification={this.state.classification.value} />
+            <CounterPartyControl 
+            value={primaryParty}
+            onChange={(e)=>{console.log(`primary ${e}`)}}
+            classification={this.state.classification.value} />
         </div>
 
         const durationPanel = !this.state.expiryDate ? <React.Fragment>
@@ -207,24 +234,29 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     </div>
 
                     
-                    <fieldset>
+                    <fieldset className="form-group">
                         <legend><h5 className="page-title">Counter Parties</h5></legend>
                         {primaryCounterParty}
                     {
                         this.state.counterparties.slice(1).map((cp,idx)=>{
                             return <div className="form-group" key={idx}>
                             <CounterPartyControl key={`ccp${idx}`} 
+                            value={cp.PartyName}
+                            onChange={(e)=>{console.log(`list ${e}`)}}
+
                             classification={cp.Classification} />
                         </div>
                         })
                     }
+                        <div className="pull-right">
                         <button type="button" className="btn btn-primary"
                         onClick={()=>{
                             this.setState({
                               showModal:true,
                               selectedCounterPartyId:null
                             })
-                        }}>Add</button>
+                        }}>Add Counter Party</button>
+                        </div>
                     </fieldset>
 
                     <div className="form-group">
@@ -278,6 +310,14 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                                 }}
                             />
                         </div>
+                        <label className="col-md-2 control-label">File</label>
+                        <div className="col-md-4">
+                        <FileUploads
+                            textmessage="File Uplpad"
+                            files={this.state.upFiles}
+                            onChange={this.handleUPFiles}
+                        />
+                        </div>
                     </div>
 
                     {/* 
@@ -289,11 +329,18 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         </div>
                     </div>
                      */}
+
+                     <div className="pull-right">
+                            <button type="button" className="btn btn-success">Upload and Save</button>
+                            <button type="button" className="btn btn-danger">Close</button>
+                     </div>
                     
                 </div>
             </div>
             
             {modalDialog}
+
+
         </div>
     }
 }

@@ -536,6 +536,20 @@ declare interface HandPhonePTCItem {
 
 declare interface CounterParty {
   Classification?:ContractClassification,
-  PartyName?:string;
+  PartyName?:any;
   Nature?:string;
+}
+
+declare interface ContractFormView {
+  contractTypes:ReactSelectValue;
+  contractingEntity:ReactSelectValue;
+  relationship:ReactSelectValue;
+  effectiveDate:Date;
+  expiryDate:Date;
+  durationYears:number;
+  durationMonths:number;
+  category:ReactSelectValue;
+  function:ReactSelectValue;
+  counterparties:CounterParty[];
+  owner:IPersonaProps[];
 }
