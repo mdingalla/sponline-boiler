@@ -5,9 +5,9 @@ import { RouteComponentProps } from "../../../node_modules/@types/react-router";
 import ContractContentTypesDropdown from "../ContractContentTypeDropdown";
 import { EmptyReactSelectValue, DayPickerStrings } from "../../constants/config";
 import { ReactSelectValue, CounterParty } from "../../../types/models";
-import { IPersonaProps } from "office-ui-fabric-react/lib-es2015/Persona";
+// import { IPersonaProps } from "office-ui-fabric-react/lib-es2015/Persona";
 import EntityDropdown from "../EntityDropdown";
-import { DatePicker } from "office-ui-fabric-react/lib-es2015/DatePicker";
+// import { DatePicker } from "office-ui-fabric-react/lib-es2015/DatePicker";
 import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
 // import {
@@ -22,6 +22,7 @@ import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
 // import LocalizatonApi from "../../sharepointapi/localizationApi";
 // import PTCApprovalHistoryDashboardTable from "./ptcapprovalhistory";
 import SPClientPeoplePicker from "../SPPeoplePicker/";
+import { IPersonaProps, DatePicker } from "office-ui-fabric-react";
 
 export namespace SearchPage {
   export interface Props extends RouteComponentProps<void> {
@@ -102,7 +103,8 @@ SearchPage.State
                         <div className="col-md-4">
                            <div className="row">
                                <div className='col-md-6'>
-                                <DatePicker strings={DayPickerStrings} ref="effectiveDate"
+                                <DatePicker strings={DayPickerStrings} 
+                                // ref="effectiveDate"
                                     allowTextInput={ true }
                                     onSelectDate={ date => {
                                         this.setState({
@@ -113,7 +115,8 @@ SearchPage.State
                                 
                                </div>
                                <div className="col-md-6">
-                               <DatePicker strings={DayPickerStrings} ref="effectiveDate"
+                               <DatePicker strings={DayPickerStrings} 
+                            //    ref="effectiveDate"
                                     allowTextInput={ true }
                                     onSelectDate={ date => {
                                         this.setState({
@@ -131,7 +134,8 @@ SearchPage.State
 
                             <div className="row">
                                 <div className="col-md-6">
-                                    <DatePicker strings={DayPickerStrings} ref="expiryDate"
+                                    <DatePicker strings={DayPickerStrings} 
+                                    // ref="expiryDate"
                                     allowTextInput={ true }
                                     onSelectDate={ date => {
                                         this.setState({
@@ -141,7 +145,8 @@ SearchPage.State
                                     value={this.state.expiryDate} placeholder='Select a date...' />
                                 </div>
                                 <div className="col-md-6">
-                                    <DatePicker strings={DayPickerStrings} ref="expiryDate"
+                                    <DatePicker strings={DayPickerStrings} 
+                                    // ref="expiryDate"
                                     allowTextInput={ true }
                                     onSelectDate={ date => {
                                         this.setState({

@@ -2,10 +2,17 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import * as ReactDOM from 'react-dom';
-import {BaseComponent,autobind, NormalPeoplePicker,IBasePickerProps, ListPeoplePicker,CompactPeoplePicker,IPersonaProps, IBasePicker } from 'office-ui-fabric-react';
+import {BaseComponent,
+  NormalPeoplePicker,
+  IBasePickerProps,
+  ListPeoplePicker,
+  CompactPeoplePicker,
+  IPersonaProps,
+    IBasePicker, 
+    IBaseProps} from 'office-ui-fabric-react';
 
 import { SPHttpClient } from '@pnp/sp';
-import { IBaseProps } from '@uifabric/utilities/lib-es2015/BaseComponent';
+// import { IBaseProps } from '@uifabric/utilities/BaseComponent';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
 
@@ -73,7 +80,7 @@ interface SPClientPeoplePickerElement extends Element {
 
 
 
-  @autobind
+  
   private _onFilterChanged(filterText: string, currentPersonas: IPersonaProps[], limitResults?: number) {
     if (filterText) {
       // var userSearchSuggestionEndpoint = location.protocol + '//' + location.host  + "/_api/Web/SiteUserInfoList/items?" +
@@ -121,7 +128,7 @@ interface SPClientPeoplePickerElement extends Element {
   }
 
 
-  @autobind
+  
   private _StaffMasterOnFilterChanged(filterText: string, currentPersonas: IPersonaProps[], limitResults?: number) {
     if (filterText) {
       // var userSearchSuggestionEndpoint = location.protocol + '//' + location.host  + "/_vti_bin/ListData.svc/UserInformationList?" +
@@ -176,8 +183,8 @@ interface SPClientPeoplePickerElement extends Element {
 
   
 
-  @autobind
-  private _ClientPeoplePickerSearchUser(filterText: string, currentPersonas: IPersonaProps[], limitResults?: number){
+  
+  private _ClientPeoplePickerSearchUser = (filterText: string, currentPersonas: IPersonaProps[], limitResults?: number) => {
     // let searchString = 'andrew';
     let endpointUrl = `${_spPageContextInfo.siteServerRelativeUrl}/_api/SP.UI.ApplicationPages.ClientPeoplePickerWebServiceInterface.clientPeoplePickerSearchUser`.replace(/\/\//g, '/');
     if (filterText) {
@@ -233,7 +240,7 @@ interface SPClientPeoplePickerElement extends Element {
   }
 
 
-  @autobind
+  
   private ClientPeoplePickerSearchUser(filterText: string, currentPersonas: IPersonaProps[], limitResults?: number){
     // let searchString = 'andrew';
 

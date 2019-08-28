@@ -220,7 +220,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
                         <label className="col-md-2 control-label">Effective Date</label>
                         <div className="col-md-4">
-                        <DatePicker strings={DayPickerStrings} ref="effectiveDate"
+                        <DatePicker strings={DayPickerStrings} 
+                        // ref="effectiveDate"
                             allowTextInput={ true }
                             onSelectDate={ date => {
                                 this.setState({
@@ -262,7 +263,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     <div className="form-group">
                         <label className="col-md-2 control-label">Expiry Date</label>
                         <div className="col-md-4">
-                            <DatePicker strings={DayPickerStrings} ref="expiryDate"
+                            <DatePicker strings={DayPickerStrings} 
+                            // ref="expiryDate"
                                 allowTextInput={ true }
                                 onSelectDate={ date => {
                                     this.setState({

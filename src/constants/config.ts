@@ -2,6 +2,8 @@ import { ReactSelectValue, ContractClassification } from "../../types/models";
 
 export const SPOnPremise = `https://iconnect.interplex.com`;
 
+export const homePagePath = `${_spPageContextInfo.webServerRelativeUrl}/default.aspx`
+
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 

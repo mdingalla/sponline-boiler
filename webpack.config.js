@@ -44,7 +44,7 @@ module.exports = {
     runtimeChunk: true
   },
   entry: {
-  
+    home:'./home.tsx',
     main:'./index.tsx',
     vendor: [
       'react',
@@ -57,6 +57,21 @@ module.exports = {
       'jquery',
       'bootstrap-loader',
       'bootstrap',
+      'office-ui-fabric-react',
+      'react-select',
+      'canvas-datagrid'
+    ],
+    homevendor: [
+      'react',
+      'react-dom',
+      'react-redux',
+      'react-router',
+      'redux',
+      'es6-promise',
+      'whatwg-fetch',
+      'jquery',
+      // 'bootstrap-loader',
+      // 'bootstrap',
       'office-ui-fabric-react',
       'react-select',
       'canvas-datagrid'
@@ -177,6 +192,7 @@ module.exports = {
       disable:true
     }),
     new HtmlWebpackPlugin({
+      chunks:["main","vendor"],
       minify:false,
       // minify:{
       //   collapseWhitespace: false,
@@ -200,6 +216,13 @@ module.exports = {
       // filename: 'homepage.html'
 
       // inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      chunks:["home","homevendor"],
+      minify:false,
+      inject: 'body',
+      template: './template/home.html', //if main
+      filename: 'home.html' //only
     }),
     new ProvidePlugin({
       jQuery: 'jquery',
