@@ -414,6 +414,23 @@
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
 
+"@uifabric/azure-themes@^7.0.6":
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/@uifabric/azure-themes/-/azure-themes-7.0.6.tgz#7acfed43e6587c4e00747b7a4abcd9d0cc6c73fb"
+  dependencies:
+    "@uifabric/merge-styles" "^7.4.1"
+    "@uifabric/set-version" "^7.0.2"
+    office-ui-fabric-react "^7.27.1"
+    tslib "^1.7.1"
+
+"@uifabric/file-type-icons@^7.0.7":
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@uifabric/file-type-icons/-/file-type-icons-7.0.7.tgz#29c26d10fd14b7b73dc4418afbb1005d42f02e57"
+  dependencies:
+    "@uifabric/set-version" "^7.0.2"
+    "@uifabric/styling" "^7.6.1"
+    tslib "^1.7.1"
+
 "@uifabric/foundation@^7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@uifabric/foundation/-/foundation-7.1.0.tgz#1f47527032b3ccf42488aca5de5a39a492037a0f"
@@ -438,6 +455,21 @@
     "@uifabric/set-version" "^7.0.2"
     tslib "^1.7.1"
 
+"@uifabric/react-cards@^0.108.0":
+  version "0.108.0"
+  resolved "https://registry.yarnpkg.com/@uifabric/react-cards/-/react-cards-0.108.0.tgz#b1126661961bd41990b960a352f27f9b0cc333d4"
+  dependencies:
+    "@microsoft/load-themed-styles" "^1.7.13"
+    "@uifabric/azure-themes" "^7.0.6"
+    "@uifabric/file-type-icons" "^7.0.7"
+    "@uifabric/foundation" "^7.1.0"
+    "@uifabric/set-version" "^7.0.2"
+    "@uifabric/styling" "^7.6.1"
+    "@uifabric/theme-samples" "^7.0.4"
+    "@uifabric/utilities" "^7.0.8"
+    office-ui-fabric-react "^7.28.1"
+    tslib "^1.7.1"
+
 "@uifabric/set-version@^7.0.2":
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@uifabric/set-version/-/set-version-7.0.2.tgz#9e2aede95e5cad58151e6ab0f94cc6efaef68c13"
@@ -454,6 +486,15 @@
     "@uifabric/utilities" "^7.0.8"
     tslib "^1.7.1"
 
+"@uifabric/theme-samples@^7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@uifabric/theme-samples/-/theme-samples-7.0.4.tgz#191b44cf662daaaa77e0f955371b6535b834a126"
+  dependencies:
+    "@uifabric/set-version" "^7.0.2"
+    "@uifabric/variants" "^7.0.4"
+    office-ui-fabric-react "^7.27.1"
+    tslib "^1.7.1"
+
 "@uifabric/utilities@^7.0.8":
   version "7.0.8"
   resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-7.0.8.tgz#4723778b571b010305371ff33b00b3c2d5cb2829"
@@ -461,6 +502,14 @@
     "@uifabric/merge-styles" "^7.4.1"
     "@uifabric/set-version" "^7.0.2"
     prop-types "^15.5.10"
+    tslib "^1.7.1"
+
+"@uifabric/variants@^7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@uifabric/variants/-/variants-7.0.4.tgz#37a7917f8568f5ca847a363e3cd81c63ea284699"
+  dependencies:
+    "@uifabric/set-version" "^7.0.2"
+    office-ui-fabric-react "^7.27.1"
     tslib "^1.7.1"
 
 "@webassemblyjs/ast@1.8.5":
@@ -5601,7 +5650,11 @@ office-ui-fabric-core@9.6.1-fluent2:
   version "9.6.1-fluent2"
   resolved "https://registry.yarnpkg.com/office-ui-fabric-core/-/office-ui-fabric-core-9.6.1-fluent2.tgz#ad90db192787381c9b877358a914be8781fa6e49"
 
-office-ui-fabric-react@^7.28.1:
+office-ui-fabric-core@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/office-ui-fabric-core/-/office-ui-fabric-core-10.1.0.tgz#9b19386330bd439e42ee69f5debba84b4f78b1c5"
+
+office-ui-fabric-react@^7.27.1, office-ui-fabric-react@^7.28.1:
   version "7.28.1"
   resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-7.28.1.tgz#59fc2e2adc8e3979be94686a29cc5940842cf8d6"
   dependencies:

@@ -56,7 +56,8 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-          let filter = input && input.length > 0 ? " EntityName eq '" + input + "' or substringof('" + input + "',EntityName)" : "";
+          let filter = input && input.length > 0 ? `EntityName eq '${input}' 
+          or substringof('${input}',EntityName) or substringof('${input}',CompanyCode)` : "";
             
 
             fetch(`${SPOnPremise}/_api/web/lists/getbytitle('PlantMaster')/items?$filter=${filter}`,{
@@ -81,7 +82,7 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
                 })
                 let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
                 
-                let results = x.map((item)=>{
+                let results = _.sortBy(x,'CompanyCode').map((item)=>{
                     return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
                   });
                   callback(null, {

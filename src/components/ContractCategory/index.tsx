@@ -54,7 +54,7 @@ class ContractCategoryDropdown extends React.Component<ContractCategoryDropdown.
           .get();
           plants.then((data)=>{
               let results = data.map((item)=>{
-                return { value: item.KeyValue, label:`${item.Title}`}
+                return { value: item.Id, label:`${item.Title}`}
               });
               callback(null, {
                   options: results,

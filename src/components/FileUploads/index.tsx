@@ -9,6 +9,7 @@ export namespace FileUploads {
         files:any[];
         onChange:(e:any[])=>void;
         textmessage:string;
+        multi?:boolean;
     }
 
     export interface State {
@@ -79,9 +80,18 @@ class FileUploads extends React.Component<FileUploads.Props,FileUploads.State> {
     // }
 
     render(){
+        const fileUploadControl = <div className="col-md-12">
+        <div className={classNames(style.filedropzone,"dropzone")} >
+            <Dropzone
+            onDrop={this.onDrop.bind(this)}>
+                <p>{this.props.textmessage}</p>
+                </Dropzone>
+        </div></div>;
+
+        const fileUpload = this.props.multi ? fileUploadControl : (this.state.upFiles.length > 0 ? null : fileUploadControl)
 
         const upFiles = this.props.files && this.props.files.length > 0 ?  
-        <div className="col-md-6">
+        <div className="col-md-12">
             <h4>For Upload</h4>
                 <ul className="list-group">
                 {this.state.upFiles.map((file,idx)=>{
@@ -96,14 +106,7 @@ class FileUploads extends React.Component<FileUploads.Props,FileUploads.State> {
                 </ul>
         </div> : null;
         return <div className="row-fluid">
-            <div className="col-md-6">
-                <div className={classNames(style.filedropzone,"dropzone")} >
-                    <Dropzone
-                    onDrop={this.onDrop.bind(this)}>
-                        <p>{this.props.textmessage}</p>
-                        </Dropzone>
-                </div>
-            </div>
+            {fileUpload}
            {upFiles}
             {/* <input type="file" 
                      onChange={(e)=>{this.handleAdd(e.target.files);e.target.value=null}} /> */}

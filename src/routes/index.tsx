@@ -16,13 +16,9 @@ import travelWrapper from '../components/TravelHOC';
 const AppRoutes = ()=>  (
                     <Switch>
                         <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
+                        <Route exact path={`${pagePath}/:id`} component={withRouter(travelWrapper(Dashboard))} />
                         <Route exact path={`${pagePath}/search`} component={withRouter(travelWrapper(SearchContainer))} />
-                        {/* <Route  path={`${pagePath}/new`} component={withRouter(travelWrapper(PettyCashContainer))} />
-                        <Route  path={`${pagePath}/unauthorized`} component={withRouter(travelWrapper(NoAccessContainer))} />
-                        <Route  path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(PettyCashContainer))} />
-                        <Route  path={`${pagePath}/approval/:id`} component={withRouter(travelWrapper(PettyCashApprovalContainer))} />
-                        <Route  path={`${pagePath}/print/:id`} component={withRouter(travelWrapper(PrintPreview))} />
-                       <Route  path={`${pagePath}/test`} component={withRouter(travelWrapper(App))} /> */}
+                     
                     </Switch>)
 
 export default AppRoutes;

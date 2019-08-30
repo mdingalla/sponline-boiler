@@ -553,3 +553,21 @@ declare interface ContractFormView {
   counterparties:CounterParty[];
   owner:IPersonaProps[];
 }
+
+
+declare interface ContractFormState {
+  classification?:ReactSelectValue;
+  category?:ReactSelectValue;
+  contentTypes?:ReactSelectValue;
+  department?:ReactSelectValue;
+  entity?:ReactSelectValue;
+  effectiveDate?:any;
+  expiryDate?:any;
+  monthDuration?:number;
+  yearDuration?:number;
+  owner?: IPersonaProps[];
+  counterparties?:CounterParty[];
+  showModal:boolean;
+  selectedCounterPartyId?:number;
+  upFiles:any[]
+}

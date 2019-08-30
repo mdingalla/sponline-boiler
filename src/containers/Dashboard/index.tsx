@@ -12,7 +12,7 @@ import "!style-loader!css-loader!./override.css";
 //   AppConfig
 // } from "../../../types/models";
 // import * as DashboardActions from "../../actions/dashboard";
-// import * as PTCActions from "../../actions/ptc";
+import * as ContractActions from "../../actions/contract";
 import DashboardPage from "../../components/Dashboard";
 import { Toggle } from "office-ui-fabric-react/lib/Toggle";
 import ContractForm from "../../components/ContractForm";
@@ -23,7 +23,7 @@ export namespace Dashboard {
     appconfig: AppConfig;
     contract: ContractFormView;
     // dashboardactions: typeof DashboardActions;
-    // ptcactions: typeof PTCActions;
+    contractactions: typeof ContractActions;
     // dashboard: DashboardModel;
     // profile: AppProfile;
     // locale: LocalizedData;
@@ -90,7 +90,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    // dashboardactions: bindActionCreators(DashboardActions as any, dispatch),
+    contractactions: bindActionCreators(ContractActions as any, dispatch),
     // ptcactions: bindActionCreators(PTCActions as any, dispatch)
   };
 }

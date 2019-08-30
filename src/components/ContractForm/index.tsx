@@ -2,11 +2,12 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { DatePicker, IPersonaProps } from "../../../node_modules/office-ui-fabric-react";
 
+import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
 import { EmptyReactSelectValue, DayPickerStrings } from "../../constants/config";
-import { ReactSelectValue, CounterParty, AppConfig, ContractFormView } from "../../../types/models";
+import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
@@ -54,27 +55,13 @@ export namespace ContractForm {
     export interface Props extends RouteComponentProps<void> {
         appconfig: AppConfig;
         contract: ContractFormView;
+        contractactions: typeof ContractActions;
     }
 
-    export interface State {
-        classification?:ReactSelectValue;
-        category?:ReactSelectValue;
-        contentTypes?:ReactSelectValue;
-        department?:ReactSelectValue;
-        entity?:ReactSelectValue;
-        effectiveDate?:any;
-        expiryDate?:any;
-        monthDuration?:number;
-        yearDuration?:number;
-        owner?: IPersonaProps[];
-        counterparties?:CounterParty[];
-        showModal:boolean;
-        selectedCounterPartyId?:number;
-        upFiles:any[]
-    }
+    
 }
 
-export default class ContractForm extends React.Component<ContractForm.Props,ContractForm.State> {
+export default class ContractForm extends React.Component<ContractForm.Props,ContractFormState> {
     isCancelled: any;
     constructor(props){
         super(props);
@@ -82,6 +69,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.handleModalOk = this.handleModalOk.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleUPFiles = this.handleUPFiles.bind(this);
+        this.handleSave = this.handleSave.bind(this);
 
         const {contract} = this.props;
 
@@ -101,40 +89,51 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
 
     handleModalOk(e) {
-        console.log(e)
-        !this.isCancelled &&
-          this.setState(
-            {
-              counterparties:this.state.counterparties.concat([
-                  {
-                      Classification:e.classification,
-                      Nature:'',
-                      PartyName:e.value,
+    console.log(e)
+    !this.isCancelled &&
+        this.setState(
+        {
+            counterparties:this.state.counterparties.concat([
+                {
+                    Classification:e.classification,
+                    Nature:'',
+                    PartyName:e.value,
 
-                  }
-              ])
-            },
-            () => {
-                !this.isCancelled &&
-                  this.setState({
-                    showModal: false
-                  });
-            }
-          );
-      }
+                }
+            ])
+        },
+        () => {
+            !this.isCancelled &&
+                this.setState({
+                showModal: false
+                });
+        }
+        );
+    }
     
-      handleModalClose() {
-        this.setState({
-          showModal: false,
-        //   id: null
-        });
-      }
+    handleModalClose() {
+    this.setState({
+        showModal: false,
+    //   id: null
+    });
+    }
 
-      handleUPFiles(files) {
-        this.setState({
-            upFiles:files
-        })
-      }
+    handleUPFiles(files) {
+    this.setState({
+        upFiles:files
+    })
+    }
+
+    handleSave(){
+    this.props.contractactions.CreateOrUpdateContract(this.state)
+    }
+
+    componentDidMount(){
+        const Id = this.props.match.params["Id"];
+        if(Id){
+            
+        }
+    }
 
     render(){
         const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0].PartyName : null;
@@ -333,7 +332,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                      */}
 
                      <div className="pull-right">
-                            <button type="button" className="btn btn-success">Upload and Save</button>
+                            <button type="button" 
+                            onClick={this.handleSave}
+                            className="btn btn-success">Upload and Save</button>
                             <button type="button" className="btn btn-danger">Close</button>
                      </div>
                     
