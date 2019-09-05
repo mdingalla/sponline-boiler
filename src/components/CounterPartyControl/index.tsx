@@ -2,55 +2,81 @@ import * as React from 'react';
 import SupplierDropdown from '../SupplierDropdown';
 import EntityDropdown from '../EntityDropdown';
 import CustomerDropdown from '../CustomerDropdown';
-import { ReactSelectValue } from '../../../types/models';
+import { ReactSelectValue, CounterParty, ContractClassification, CounterPartyControlState } from '../../../types/models';
 import { EmptyReactSelectValue, Vendor, Others } from '../../constants/config';
+import SupplierClassificationDropdown from '../SupplierDropdown/classification';
 
 export namespace CounterPartyControl {
     export interface Props {
         classification:string;
-        value:any;
-        onChange:(e)=>void;
+        selectedValue:any;
+        selectedBusinessType:any;
+        onChange:(e:CounterPartyControlState)=>void;
+        id:number;
     }
 
-    export interface State {
-        selectedValue?:any;
-        selectedBusinessType?:string;
-
-    }
+    
 }
 
-export default class CounterPartyControl extends React.Component<CounterPartyControl.Props,CounterPartyControl.State>{
+export default class CounterPartyControl extends React.Component<CounterPartyControl.Props,CounterPartyControlState>{
     constructor(props){
         super(props);
 
         this.state = {
-            selectedBusinessType:'',
-            selectedValue:this.props.value
+            selectedBusinessType:this.props.selectedBusinessType,
+            selectedValue:this.props.selectedValue,
+            id:this.props.id
+
             // selectedValue: !this.props.classification || this.props.classification == Others ?  "" : EmptyReactSelectValue
         }
 
         this.handleOnChange = this.handleOnChange.bind(this);
+        this.handlebusinessType = this.handlebusinessType.bind(this);
     }
+
+    // static getDerivedStateFromProps(props:CounterPartyControl.Props,state:CounterPartyControlState){
+    //     if(props.id != state.id){
+
+    //     }
+    // }
 
     componentWillReceiveProps(nextProps:CounterPartyControl.Props){
         if(nextProps.classification != this.props.classification){
             this.setState({
-                selectedValue:EmptyReactSelectValue
+                selectedValue:nextProps.classification == Others ? "" : EmptyReactSelectValue,
+                selectedBusinessType:nextProps.classification != Vendor ? "" : EmptyReactSelectValue
             })
         }
-        if(nextProps.value != this.props.value){
+        if(nextProps.selectedValue != this.props.selectedValue ||
+            nextProps.selectedBusinessType != this.props.selectedBusinessType){
             this.setState({
-                selectedValue:nextProps.value
+                selectedValue:nextProps.selectedValue,
+                selectedBusinessType:nextProps.selectedBusinessType
             })
         }
     }
 
-    handleOnChange(fld,value){
+    handleOnChange(value){
         this.setState({
-            [fld]:value
+            ...this.state,
+            selectedValue:value
         },()=>{
             this.props.onChange(this.state)
         })
+    }
+
+    handlebusinessType(e){
+        this.setState({
+            ...this.state,
+            selectedBusinessType:e
+        },()=>{
+            // const busType = e as ReactSelectValue;
+            // if(busType){
+                this.props.onChange(this.state)
+            // }
+        })
+
+       
     }
 
 
@@ -60,16 +86,22 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
         <label className="col-md-2 control-label">Others</label>
         <div className="col-md-4">
             <input className="form-control"
-                onChange={(e)=>{this.handleOnChange('selectedValue',e)}}
+                onChange={(e)=>{this.handleOnChange(e.currentTarget.value)}}
              type="text" value={this.state.selectedValue} />
         </div>
         </React.Fragment>
+
+        let counterPartyClassification = <input type="text" 
+        onChange={(e)=>{this.handlebusinessType(e.currentTarget.value)}}
+        value={this.state.selectedBusinessType}
+        className="form-control"/>;
+
         switch (this.props.classification) {
             case "Customer":
                 counterParty =  <React.Fragment>
                     <label className="col-md-2 control-label">Customers</label>
                     <div className="col-md-4">
-                    <CustomerDropdown onChange={(e)=>{this.handleOnChange('selectedValue',e)}}
+                    <CustomerDropdown onChange={this.handleOnChange}
                     value={this.state.selectedValue}  />
                     </div>
                     </React.Fragment>
@@ -79,7 +111,7 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
                 counterParty =  <React.Fragment>
                     <label className="col-md-2 control-label">Interplex</label>
                     <div className="col-md-4">
-                    <EntityDropdown onChange={(e)=>{this.handleOnChange('selectedValue',e)}}
+                    <EntityDropdown onChange={this.handleOnChange}
                     value={this.state.selectedValue} />
                     </div>
                     </React.Fragment>
@@ -88,10 +120,13 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
                  counterParty = <React.Fragment>
                         <label className="col-md-2 control-label">Supplier</label>
                         <div className="col-md-4">
-                        <SupplierDropdown onChange={(e)=>{this.handleOnChange('selectedValue',e)}}
+                        <SupplierDropdown onChange={this.handleOnChange}
                         value={this.state.selectedValue}  />
                         </div>
                     </React.Fragment>
+
+                counterPartyClassification = <SupplierClassificationDropdown 
+                value={this.state.selectedBusinessType} onChange={this.handlebusinessType} />
                     break;
             default:
                 break;
@@ -101,10 +136,7 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
             {counterParty}
             <label className="col-md-2 control-label">Business Type</label>
                         <div className="col-md-4">
-                        <input type="text" 
-                        onChange={(e)=>{this.handleOnChange('selectedBusinessType',e.currentTarget.value)}}
-                        value={this.state.selectedBusinessType}
-                        className="form-control"/>
+                        {counterPartyClassification}
                         </div>
 
         </React.Fragment>

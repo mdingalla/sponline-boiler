@@ -16,8 +16,9 @@ import travelWrapper from '../components/TravelHOC';
 const AppRoutes = ()=>  (
                     <Switch>
                         <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
-                        <Route exact path={`${pagePath}/:id`} component={withRouter(travelWrapper(Dashboard))} />
                         <Route exact path={`${pagePath}/search`} component={withRouter(travelWrapper(SearchContainer))} />
+                        <Route exact path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(Dashboard))} />
+                        
                      
                     </Switch>)
 

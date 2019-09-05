@@ -4,9 +4,12 @@ import  {Select,Async,Creatable,AsyncCreatable}  from 'react-select/lib';
 import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
+import IConnectSupplierApi from '../../api/iconnectSupplierApi';
 
 
-export namespace CustomerDropdown {
+
+
+export namespace SupplierClassificationDropdown {
     export interface Props {
         value:any;
         onChange:(e)=>void;
@@ -17,7 +20,7 @@ export namespace CustomerDropdown {
     }
 }
 
-class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDropdown.State> {
+class SupplierClassificationDropdown extends React.Component<SupplierClassificationDropdown.Props,SupplierClassificationDropdown.State> {
     constructor(props){
         super(props);
 
@@ -30,7 +33,27 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
 
     }
 
-    
+    // getOptions(input, callback) {
+    //     let pvalue = this.props.value;
+    //     setTimeout(function() {
+    //       let filter = input && input.length > 0 ? " Title eq '" + input + "' or substringof('" + input + "',Description)" : "";
+        
+    //       let plants = sitecolweb.lists.getByTitle('PlantMaster')
+    //       .items.filter(filter)
+    //       .orderBy('Title')
+    //       .get();
+    //       plants.then((data)=>{
+    //           let results = data.map((item)=>{
+    //             return { value: item.Id, label:`${item.Title} - ${item.Description}`}
+    //           });
+    //           callback(null, {
+    //               options: results,
+    //               complete: true,
+    //           });
+    //       })
+
+    //     }, 500);
+    // };
 
     getOptions(input, callback) {
         let pvalue = this.props.value;
@@ -39,18 +62,7 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
           const filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
             
 
-            fetch(`${SPOnPremise}/customer/_api/web/lists/getbytitle('EndCustomers')/items?$filter=${filter}`,{
-                credentials: 'include',
-                method: 'GET',
-                cache: 'no-cache',
-                mode: 'cors',
-                headers: {
-                    Accept: 'application/json;odata=verbose',
-                    // 'Content-Type': 'application/json', // will fail if provided
-                    // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-                }
-            })
-            .then(r => r.json())
+          IConnectSupplierApi.GetSupplierClassification(filter)
             .then((data)=>{
                 let results = data.d.results.map((item)=>{
                     return { value: item.Title, label:`${item.Title}`}
@@ -73,13 +85,24 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
         },()=>{  this.props.onChange(e); })
     }
 
-    componentWillReceiveProps(nextProps:CustomerDropdown.Props){
-        if(nextProps != this.props)
+    // componentWillReceiveProps(nextProps:SupplierClassificationDropdown.Props){
+    //     if(nextProps != this.props)
+    //     {
+    //         this.setState({
+    //             value:nextProps.value
+    //         });
+    //     }
+    // }
+
+
+    static getDerivedStateFromProps(props:SupplierClassificationDropdown.Props,state:SupplierClassificationDropdown.State){
+        if(props.value != state.value)
         {
-            this.setState({
-                value:nextProps.value
-            });
+            return {
+                value:props.value
+            } as SupplierClassificationDropdown.State
         }
+        return null;
     }
 
     render(){
@@ -91,9 +114,9 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
         loadOptions={this.getOptions}
         allowCreate={true}
         ignoreCase={true}
-        ref="selCustomerDropdown" />
+        ref="selSupplierClassifiationDropdown" />
         )
     }
 }
 
-export default CustomerDropdown;
+export default SupplierClassificationDropdown;

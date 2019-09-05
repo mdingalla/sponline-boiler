@@ -23,6 +23,7 @@ export default handleActions<ContractFormView, any>(
         
         return {
           ...state,
+          ...action.payload
         };
       }
     },

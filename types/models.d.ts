@@ -535,12 +535,14 @@ declare interface HandPhonePTCItem {
 
 
 declare interface CounterParty {
-  Classification?:ContractClassification,
+  Id?:number;
+  Classification?:any,
   PartyName?:any;
-  Nature?:string;
+  Nature?:any;
 }
 
 declare interface ContractFormView {
+  id?:number;
   contractTypes:ReactSelectValue;
   contractingEntity:ReactSelectValue;
   relationship:ReactSelectValue;
@@ -556,6 +558,7 @@ declare interface ContractFormView {
 
 
 declare interface ContractFormState {
+  id?:number;
   classification?:ReactSelectValue;
   category?:ReactSelectValue;
   contentTypes?:ReactSelectValue;
@@ -567,7 +570,30 @@ declare interface ContractFormState {
   yearDuration?:number;
   owner?: IPersonaProps[];
   counterparties?:CounterParty[];
-  showModal:boolean;
+  showRelationShipModal:boolean;
+  showAdditonalDocumentModal:boolean;
   selectedCounterPartyId?:number;
-  upFiles:any[]
+  upFiles:File[]
+}
+
+
+declare interface SPContractData {
+    Id?: number;
+  ContentTypeId:any,
+  EntityId:number,
+  EntityCode:string,
+  EntityName:string,
+  Region:string,
+  ContractCategoryId:number,
+  ContractOwnerId:number,
+  FunctionDept:string,
+  ContractClassificationId:number,
+  EffectiveDate:string,
+  ExpiryDate:string
+}
+
+declare interface CounterPartyControlState {
+  id:number;
+  selectedValue?:any;
+  selectedBusinessType?:any;
 }

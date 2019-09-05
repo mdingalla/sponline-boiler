@@ -4,6 +4,7 @@ import  {Select,Async,Creatable,AsyncCreatable}  from 'react-select/lib';
 import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
+import IConnectSupplierApi from '../../api/iconnectSupplierApi';
 
 
 
@@ -61,21 +62,10 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
           const filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
             
 
-            fetch(`${SPOnPremise}/supplierapp/_api/web/lists/getbytitle('SupplierMaster')/items?$filter=${filter}`,{
-                credentials: 'include',
-                method: 'GET',
-                cache: 'no-cache',
-                mode: 'cors',
-                headers: {
-                    Accept: 'application/json;odata=verbose',
-                    // 'Content-Type': 'application/json', // will fail if provided
-                    // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-                }
-            })
-            .then(r => r.json())
+          IConnectSupplierApi.GetSuppliers(filter)
             .then((data)=>{
                 let results = data.d.results.map((item)=>{
-                    return { value: item.VendorCode, label:`${item.Title}`}
+                    return { value: item.Title, label:`${item.Title}`}
                   });
                   callback(null, {
                       options: results,
@@ -95,13 +85,23 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
         },()=>{  this.props.onChange(e); })
     }
 
-    componentWillReceiveProps(nextProps:SupplierDropdown.Props){
-        if(nextProps != this.props)
-        {
-            this.setState({
-                value:nextProps.value
-            });
-        }
+    // componentWillReceiveProps(nextProps:SupplierDropdown.Props){
+    //     if(nextProps != this.props)
+    //     {
+    //         this.setState({
+    //             value:nextProps.value
+    //         });
+    //     }
+    // }
+
+    static getDerivedStateFromProps(props:SupplierDropdown.Props,
+        state:SupplierDropdown.State){
+            if(props.value != state.value){
+                return {
+                    value:props.value
+                } as SupplierDropdown.State
+            }   
+            return null;
     }
 
     render(){

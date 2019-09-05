@@ -7,7 +7,7 @@ import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
 import { EmptyReactSelectValue, DayPickerStrings } from "../../constants/config";
-import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState } from "../../../types/models";
+import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState, CounterPartyControlState } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
@@ -19,13 +19,22 @@ import CounterPartyControl from "../CounterPartyControl";
 import * as Modal from "react-bootstrap/lib/Modal";
 import CounterPartyDialog from "../CounterPartyDialog";
 import FileUploads from "../FileUploads";
+import AdditionalDocumentDialog from "../AdditionalDocumentModal";
 
 interface ModalReloadProps {
-    showmodal: boolean;
+    showModal: boolean;
     OnClose: () => void;
     OnSave: (e) => void;
     Id?: number;
-  }
+}
+
+
+interface AdditionalModalProps extends ContractForm.Props {
+    showModal: boolean;
+    OnClose: () => void;
+    OnSave: (e) => void;
+    Id?: number;
+}
 
 
 
@@ -33,7 +42,7 @@ const ContractingPartiesModal = (props: ModalReloadProps) => (
     <Modal
       bsSize="large"
       aria-labelledby="contained-modal-title-lg"
-      show={props.showmodal}
+      show={props.showModal}
       onHide={props.OnClose}
     >
       <Modal.Header closeButton>
@@ -41,6 +50,28 @@ const ContractingPartiesModal = (props: ModalReloadProps) => (
       </Modal.Header>
       <CounterPartyDialog OnClose={props.OnClose}
        OnSelect={props.OnSave} />
+      {/* <Modal.Body>
+       
+      </Modal.Body>
+      <Modal.Footer>
+        <div />
+      </Modal.Footer> */}
+    </Modal>
+  );
+
+
+  const AdditionalDocumentModal = (props: AdditionalModalProps) => (
+    <Modal
+      bsSize="large"
+      aria-labelledby="contained-modal-title-lg"
+      show={props.showModal}
+      onHide={props.OnClose}>
+          <Modal.Header closeButton>
+        <Modal.Title>Related Documents</Modal.Title>
+      </Modal.Header>
+           <AdditionalDocumentDialog OnClose={props.OnClose}
+           OnSelect={props.OnSave} />
+          
       {/* <Modal.Body>
        
       </Modal.Body>
@@ -70,6 +101,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleUPFiles = this.handleUPFiles.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleAdditonalDocModalClose = this.handleAdditonalDocModalClose.bind(this);
+        this.handleAdditonalModalOk = this.handleAdditonalModalOk.bind(this);
+        this.handleCounterPartyChanges = this.handleCounterPartyChanges.bind(this);
+        
 
         const {contract} = this.props;
 
@@ -81,7 +116,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             owner:contract.owner,
             counterparties:contract.counterparties,
             entity:contract.contractingEntity,
-            showModal:false,
+            showRelationShipModal:false,
+            showAdditonalDocumentModal:false,
             selectedCounterPartyId:null,
             upFiles:[]
         }
@@ -89,59 +125,114 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
 
     handleModalOk(e) {
-    console.log(e)
-    !this.isCancelled &&
-        this.setState(
-        {
-            counterparties:this.state.counterparties.concat([
-                {
-                    Classification:e.classification,
-                    Nature:'',
-                    PartyName:e.value,
+    
+        !this.isCancelled &&
+            this.setState(
+            {
+                counterparties:this.state.counterparties.concat([
+                    {
+                        Classification:e.classification,
+                        Nature:'',
+                        PartyName:e.value,
 
-                }
-            ])
-        },
-        () => {
-            !this.isCancelled &&
+                    }
+                ])
+            },
+            () => {
+                !this.isCancelled &&
+                    this.setState({
+                    showRelationShipModal: false
+                    });
+            }
+            );
+    }
+
+    handleAdditonalModalOk(e){
+        !this.isCancelled &&
+            this.setState({
+
+            },()=>{
+                !this.isCancelled && 
                 this.setState({
-                showModal: false
-                });
-        }
-        );
+                    showAdditonalDocumentModal:false
+                })
+            })
     }
     
     handleModalClose() {
-    this.setState({
-        showModal: false,
-    //   id: null
-    });
+        this.setState({
+            showRelationShipModal: false,
+        //   id: null
+        });
+    }
+
+    handleAdditonalDocModalClose() {
+        this.setState({
+            showAdditonalDocumentModal: false,
+        //   id: null
+        });
+    }
+
+    handleCounterPartyChanges(e:CounterPartyControlState){
+        // console.log(e)
+        let counterparty = this.state.counterparties[e.id];
+        counterparty.Nature = e.selectedBusinessType;
+        counterparty.PartyName = e.selectedValue;
+
+
     }
 
     handleUPFiles(files) {
-    this.setState({
-        upFiles:files
-    })
+        this.setState({
+            upFiles:files
+        })
     }
 
     handleSave(){
-    this.props.contractactions.CreateOrUpdateContract(this.state)
+        this.props.contractactions.CreateOrUpdateContract(this.state,this.props.history)
     }
 
     componentDidMount(){
-        const Id = this.props.match.params["Id"];
+        const Id = this.props.match.params["id"];
         if(Id){
-            
+            this.props.contractactions.GetContract(Id)
+        }
+        else
+        {
+            this.props.contractactions.NewContract();
         }
     }
 
+
+    static getDerivedStateFromProps(props:ContractForm.Props,state:ContractFormState){
+        if(props.contract.id && props.contract.id != state.id){
+            const {contract} = props;
+            return {
+                category:contract.category,
+                classification:contract.relationship,
+                contentTypes:contract.contractTypes,
+                department:contract.function,
+                effectiveDate:contract.effectiveDate,
+                expiryDate:contract.expiryDate,
+                id:contract.id,
+                entity:contract.contractingEntity,
+                owner:contract.owner,
+                counterparties:contract.counterparties,
+            } as ContractFormState
+        }
+
+        return null;
+    }
+
     render(){
-        const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0].PartyName : null;
+        const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0] : null;
 
         const primaryCounterParty =  <div className="form-group">
             <CounterPartyControl 
-            value={primaryParty}
-            onChange={(e)=>{console.log(`primary ${e}`)}}
+            id={0}
+            selectedValue={primaryParty.PartyName}
+            selectedBusinessType={primaryParty.Nature}
+            onChange={this.handleCounterPartyChanges}
             classification={this.state.classification.value} />
         </div>
 
@@ -172,12 +263,19 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         </React.Fragment> : null;
 
 
-        const modalDialog =  <ContractingPartiesModal
-        showmodal={this.state.showModal}
+        const RelationshipmodalDialog =  <ContractingPartiesModal
+        showModal={this.state.showRelationShipModal}
         OnClose={this.handleModalClose}
         OnSave={this.handleModalOk}
-        Id={this.state.selectedCounterPartyId}
-      />
+        Id={this.state.selectedCounterPartyId}/>
+
+        const AdditionalModalDialog = <AdditionalDocumentModal 
+            showModal={this.state.showAdditonalDocumentModal}
+            OnClose={this.handleAdditonalDocModalClose}
+            OnSave={this.handleAdditonalModalOk}
+            {...this.props}/>
+
+        const allowMulti = !this.props.contract.id;
 
         return <div className="row">
             <h4 className="pageTitle">Contract Meta Data</h4>
@@ -212,7 +310,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         <ContractClassificationDropdown 
                         onChange={(e)=>{
                             this.setState({
-                                classification:e || EmptyReactSelectValue
+                                classification:e || EmptyReactSelectValue,
+                                
                             })
                         }} value={this.state.classification}  />
                         </div>
@@ -240,9 +339,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     {
                         this.state.counterparties.slice(1).map((cp,idx)=>{
                             return <div className="form-group" key={idx}>
-                            <CounterPartyControl key={`ccp${idx}`} 
-                            value={cp.PartyName}
-                            onChange={(e)=>{console.log(`list ${e}`)}}
+                            <CounterPartyControl key={`ccp${idx}`} id={this.state.counterparties.indexOf(cp)}
+                            selectedValue={cp.PartyName}
+                            selectedBusinessType={cp.Nature}
+                            onChange={this.handleCounterPartyChanges}
 
                             classification={cp.Classification} />
                         </div>
@@ -252,7 +352,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         <button type="button" className="btn btn-primary"
                         onClick={()=>{
                             this.setState({
-                              showModal:true,
+                              showRelationShipModal:true,
                               selectedCounterPartyId:null
                             })
                         }}>Add Counter Party</button>
@@ -314,13 +414,29 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         <label className="col-md-2 control-label">File</label>
                         <div className="col-md-4">
                         <FileUploads
-                            textmessage="File Uplpad"
+                            textmessage={allowMulti ? "Upload Files Here" : "Replace Uploaded File"}
+                            multi={allowMulti}
                             files={this.state.upFiles}
                             onChange={this.handleUPFiles}
                         />
                         </div>
                     </div>
+                    
 
+                    <fieldset className="form-group">
+                    <legend><h5 className="page-title">Related Documents</h5></legend>
+                    
+                    <div className="pull-right">
+                        <button type="button" className="btn btn-primary"
+                        onClick={()=>{
+                            this.setState({
+                                showAdditonalDocumentModal:true,
+                                selectedCounterPartyId:null
+                            })
+                        }}>Add Documents</button>
+                        </div>
+
+                    </fieldset>
                     {/* 
                     <div className="form-group">
                         <label className="col-md-2 control-label">Expiry Date</label>
@@ -341,7 +457,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 </div>
             </div>
             
-            {modalDialog}
+            {RelationshipmodalDialog}
+            {AdditionalModalDialog}
 
 
         </div>

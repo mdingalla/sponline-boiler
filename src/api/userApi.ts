@@ -16,6 +16,10 @@ class UserApi {
 
       return sp.web.siteUserInfoList.items.filter(filter).get();
   }
+
+  static GetUserById(id){
+    return sp.web.siteUserInfoList.items.getById(id).get();
+  }
 }
 
 export default UserApi;
