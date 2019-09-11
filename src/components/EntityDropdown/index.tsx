@@ -5,6 +5,7 @@ import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
 import * as _ from 'lodash';
+import LegalWebApi from '../../api/LegalWebApi';
 
 
 export namespace EntityDropdown {
@@ -31,24 +32,45 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
 
     }
 
+
     // getOptions(input, callback) {
     //     let pvalue = this.props.value;
     //     setTimeout(function() {
-    //       let filter = input && input.length > 0 ? " Title eq '" + input + "' or substringof('" + input + "',Description)" : "";
-        
-    //       let plants = sitecolweb.lists.getByTitle('PlantMaster')
-    //       .items.filter(filter)
-    //       .orderBy('Title')
-    //       .get();
-    //       plants.then((data)=>{
-    //           let results = data.map((item)=>{
-    //             return { value: item.Id, label:`${item.Title} - ${item.Description}`}
-    //           });
-    //           callback(null, {
-    //               options: results,
-    //               complete: true,
-    //           });
-    //       })
+    //       let filter = input && input.length > 0 ? `EntityName eq '${input}' 
+    //       or substringof('${input}',EntityName) or substringof('${input}',CompanyCode)` : "";
+            
+
+    //         fetch(`${SPOnPremise}/_api/web/lists/getbytitle('PlantMaster')/items?$filter=${filter}`,{
+    //             credentials: 'include',
+    //             method: 'GET',
+    //             cache: 'no-cache',
+    //             mode: 'cors',
+    //             headers: {
+    //                 Accept: 'application/json;odata=verbose',
+    //                 // 'Content-Type': 'application/json', // will fail if provided
+    //                 // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
+    //             }
+    //         })
+    //         .then(r => r.json())
+    //         .then((data)=>{
+
+    //             let entities:any[] = data.d.results.map((i)=>{
+    //                 return {
+    //                     CompanyCode:i.CompanyCode,
+    //                     EntityName:i.EntityName
+    //                 }
+    //             })
+    //             let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
+                
+    //             let results = _.sortBy(x,'CompanyCode').map((item)=>{
+    //                 return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
+    //               });
+    //               callback(null, {
+    //                   options: results,
+    //                   complete: true,
+    //               });
+    //         })
+
 
     //     }, 500);
     // };
@@ -56,37 +78,27 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-          let filter = input && input.length > 0 ? `EntityName eq '${input}' 
-          or substringof('${input}',EntityName) or substringof('${input}',CompanyCode)` : "";
+          let filter = input && input.length > 0 ? `Title eq '${input}' 
+          or substringof('${input}',Title)` : "";
             
 
-            fetch(`${SPOnPremise}/_api/web/lists/getbytitle('PlantMaster')/items?$filter=${filter}`,{
-                credentials: 'include',
-                method: 'GET',
-                cache: 'no-cache',
-                mode: 'cors',
-                headers: {
-                    Accept: 'application/json;odata=verbose',
-                    // 'Content-Type': 'application/json', // will fail if provided
-                    // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-                }
-            })
-            .then(r => r.json())
+            LegalWebApi.GetIPXEntities(filter)
             .then((data)=>{
 
-                let entities:any[] = data.d.results.map((i)=>{
+                let entities:any[] = data.map((i)=>{
                     return {
-                        CompanyCode:i.CompanyCode,
-                        EntityName:i.EntityName
+                        // CompanyCode:i.CompanyCode,
+                        value:i.Id,
+                        label:i.Title
                     }
                 })
-                let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
+                // let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
                 
-                let results = _.sortBy(x,'CompanyCode').map((item)=>{
-                    return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
-                  });
+                // let results = _.sortBy(x,'CompanyCode').map((item)=>{
+                //     return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
+                //   });
                   callback(null, {
-                      options: results,
+                      options: entities,
                       complete: true,
                   });
             })

@@ -1,6 +1,9 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { DatePicker, IPersonaProps } from "../../../node_modules/office-ui-fabric-react";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content';
+import * as Modal from "react-bootstrap/lib/Modal";
 
 import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
@@ -13,13 +16,13 @@ import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
 import ContractContentTypesDropdown from "../ContractContentTypeDropdown";
 import SPClientPeoplePicker from "../SPPeoplePicker/";
-
-import "!style-loader!css-loader!./index.css";
 import CounterPartyControl from "../CounterPartyControl";
-import * as Modal from "react-bootstrap/lib/Modal";
 import CounterPartyDialog from "../CounterPartyDialog";
 import FileUploads from "../FileUploads";
 import AdditionalDocumentDialog from "../AdditionalDocumentModal";
+
+import "!style-loader!css-loader!./index.css";
+import "!style-loader!css-loader!sweetalert2/dist/sweetalert2.css"
 
 interface ModalReloadProps {
     showModal: boolean;
@@ -50,12 +53,7 @@ const ContractingPartiesModal = (props: ModalReloadProps) => (
       </Modal.Header>
       <CounterPartyDialog OnClose={props.OnClose}
        OnSelect={props.OnSave} />
-      {/* <Modal.Body>
-       
-      </Modal.Body>
-      <Modal.Footer>
-        <div />
-      </Modal.Footer> */}
+
     </Modal>
   );
 
@@ -81,6 +79,8 @@ const ContractingPartiesModal = (props: ModalReloadProps) => (
     </Modal>
   );
 
+const MySwal = Swal
+
 
 export namespace ContractForm {
     export interface Props extends RouteComponentProps<void> {
@@ -104,7 +104,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.handleAdditonalDocModalClose = this.handleAdditonalDocModalClose.bind(this);
         this.handleAdditonalModalOk = this.handleAdditonalModalOk.bind(this);
         this.handleCounterPartyChanges = this.handleCounterPartyChanges.bind(this);
-        
+        this.handleCounterPartyDelete = this.handleCounterPartyDelete.bind(this);
 
         const {contract} = this.props;
 
@@ -120,6 +120,41 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             showAdditonalDocumentModal:false,
             selectedCounterPartyId:null,
             upFiles:[]
+        }
+    }
+
+    handleCounterPartyDelete(e:CounterPartyControlState){
+        if(e.spId)
+        {
+            const selected = e.selectedValue as ReactSelectValue;
+
+            MySwal.fire({
+                title:'Confirm Delete',
+                titleText:`${selected && selected.label ? selected.label : e.selectedValue} will be deleted.`,
+                type:'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result)=>{
+                if(result.value){
+                    this.props.contractactions.DeleteContractParty(e.spId)
+                    this.setState({
+                        counterparties:this.state.counterparties.filter(x=>x.Id != e.spId)
+                    },()=>{
+                        MySwal.fire('Deleted','Counter Party Deleted','success')
+                    })
+                }
+            })
+
+            
+        }
+        else
+        {
+            const cp = this.state.counterparties[e.id];   
+            this.setState({
+                counterparties:this.state.counterparties.filter(x=>x != cp)
+            })
         }
     }
 
@@ -229,7 +264,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
         const primaryCounterParty =  <div className="form-group">
             <CounterPartyControl 
+            onDelete={()=>{}}
             id={0}
+            showDelete={false}
+            spId={primaryParty.Id}
             selectedValue={primaryParty.PartyName}
             selectedBusinessType={primaryParty.Nature}
             onChange={this.handleCounterPartyChanges}
@@ -339,11 +377,14 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     {
                         this.state.counterparties.slice(1).map((cp,idx)=>{
                             return <div className="form-group" key={idx}>
-                            <CounterPartyControl key={`ccp${idx}`} id={this.state.counterparties.indexOf(cp)}
+                            <CounterPartyControl key={`ccp${idx}`}
+                             onDelete={this.handleCounterPartyDelete}
+                             id={this.state.counterparties.indexOf(cp)}
+                             spId={cp.Id}
                             selectedValue={cp.PartyName}
                             selectedBusinessType={cp.Nature}
                             onChange={this.handleCounterPartyChanges}
-
+                            showDelete={true}
                             classification={cp.Classification} />
                         </div>
                         })

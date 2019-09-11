@@ -5,6 +5,7 @@ import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
 import IConnectSupplierApi from '../../api/iconnectSupplierApi';
+import LegalWebApi from '../../api/LegalWebApi';
 
 
 
@@ -36,21 +37,21 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
     // getOptions(input, callback) {
     //     let pvalue = this.props.value;
     //     setTimeout(function() {
-    //       let filter = input && input.length > 0 ? " Title eq '" + input + "' or substringof('" + input + "',Description)" : "";
         
-    //       let plants = sitecolweb.lists.getByTitle('PlantMaster')
-    //       .items.filter(filter)
-    //       .orderBy('Title')
-    //       .get();
-    //       plants.then((data)=>{
-    //           let results = data.map((item)=>{
-    //             return { value: item.Id, label:`${item.Title} - ${item.Description}`}
-    //           });
-    //           callback(null, {
-    //               options: results,
-    //               complete: true,
-    //           });
-    //       })
+    //       const filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
+            
+
+    //       IConnectSupplierApi.GetSuppliers(filter)
+    //         .then((data)=>{
+    //             let results = data.d.results.map((item)=>{
+    //                 return { value: item.Title, label:`${item.Title}`}
+    //               });
+    //               callback(null, {
+    //                   options: results,
+    //                   complete: true,
+    //               });
+    //         })
+
 
     //     }, 500);
     // };
@@ -58,17 +59,27 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-        
-          const filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
+          let filter = input && input.length > 0 ? `Title eq '${input}' 
+          or substringof('${input}',Title)` : "";
             
 
-          IConnectSupplierApi.GetSuppliers(filter)
+            LegalWebApi.GetVendors(filter)
             .then((data)=>{
-                let results = data.d.results.map((item)=>{
-                    return { value: item.Title, label:`${item.Title}`}
-                  });
+
+                let entities:any[] = data.map((i)=>{
+                    return {
+                        // CompanyCode:i.CompanyCode,
+                        value:i.Id,
+                        label:i.Title
+                    }
+                })
+                // let x = _.uniqBy<any>(entities.filter(x=>x.EntityName),"CompanyCode");
+                
+                // let results = _.sortBy(x,'CompanyCode').map((item)=>{
+                //     return { value: item.CompanyCode, label:`${item.CompanyCode} - ${item.EntityName}`}
+                //   });
                   callback(null, {
-                      options: results,
+                      options: entities,
                       complete: true,
                   });
             })
@@ -76,7 +87,6 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
 
         }, 500);
     };
-
     selectChange(e){
         // console.log('Customer Select selectChange' + JSON.stringify(e))
         //

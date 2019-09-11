@@ -17,6 +17,7 @@ const CLASSIFICATION = "Classification";
 const CATEGORY = "Categories";
 const CONTRACTDOCUMENT = "Documents"
 const CONTRACTCOUNTERPARTIES = "ContractCounterParties";
+const COUNTERPARTYMASTER = "CounterPartyMaster";
 
 const myWeb = sp.web;
 
@@ -26,6 +27,70 @@ class LegalWebApi {
     return myWeb.lists.getByTitle(CONTRACTS)
       .items.getById(id).get<SPContractData>();
   }
+
+  static GetContractDataFile(id){
+    return myWeb.lists.getByTitle(CONTRACTS)
+      .items.getById(id).file.get()
+  }
+
+  static UpdateContractData(payload,id:number){
+      return myWeb.lists.getByTitle(CONTRACTS)
+        .items.getById(id).update(payload);
+  }
+
+  static async ContractCheckInOut(id,outcome:boolean){
+    //true = checkin
+    let myfile = myWeb.lists.getByTitle(CONTRACTS)
+      .items.getById(id).file;
+
+    const spFile = await myfile.get();
+    const checkOutType = spFile.CheckOutType;
+
+    if(outcome){
+      if(checkOutType == 0){
+        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkin()
+      }
+    }
+    else
+    {
+      if(checkOutType == 2){
+        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkout()
+      }
+    }
+  }
+
+  static GetIPXEntities(filter){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.filter(`ClassificationId eq 3 ${filter ? `and ${filter}`:""}` ).get()
+  }
+
+  static GetCustomers(filter){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.filter(`ClassificationId eq 1 ${filter ? `and ${filter}`:""}` ).get()
+  }
+
+  static GetVendors(filter){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.filter(`ClassificationId eq 2 ${filter ? `and ${filter}`:""}` ).get()
+  }
+
+
+  static async AddSupplierCounterPartyMaster(payload){
+   const request = await myWeb.lists.getByTitle(COUNTERPARTYMASTER).items
+      .filter(`Code eq '${payload.Code}' and ClassificationId eq 2`)
+      .get()
+
+    if(request.length <= 0)
+    {
+        return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+        .items.add(payload)
+    }
+    
+    return Promise.resolve();
+   
+  }
+
+
 
   static GetCategoryById(id){
     return myWeb.lists.getByTitle(CATEGORY)
@@ -56,6 +121,12 @@ class LegalWebApi {
       .get();
   }
 
+  static ReplaceDoc(file:File,filePath:string){
+    const newblob = new Blob([file]);
+    return myWeb.getFileByServerRelativePath(filePath).setContent(newblob)
+  }
+
+  
 
   static UploadDocument(file: File, mfilename){
       if (file.size <= 10485760) {
@@ -74,10 +145,16 @@ class LegalWebApi {
     let classification = cp.Classification as ReactSelectValue;
     let nature = cp.Nature as ReactSelectValue;
     let payload = {
-      Title:title.label ? title.label : cp.PartyName,
-      BusinessType:nature.label ? nature.label : cp.Nature,
-      ClassificationKV:classification.value ? classification.value : cp.Classification,
+      Title:title && title.label ? title.label : cp.PartyName,
+     
+      BusinessType:nature && nature.label ? nature.label : cp.Nature,
+      ClassificationKV:classification && classification.value ? classification.value : cp.Classification,
       ContractRefId:parentid
+    }
+
+    if(title && !isNaN(parseInt(title.value)))
+    {
+      payload["CounterPartyRefId"] = title.value
     }
 
     if(cp.Id){
@@ -111,6 +188,13 @@ class LegalWebApi {
         } as IPersonaProps);
       }
     });
+  }
+
+
+  static DeleteCounterParty(spId){
+  
+      return myWeb.lists.getByTitle(CONTRACTCOUNTERPARTIES)
+        .items.getById(spId).delete()
   }
 }
 

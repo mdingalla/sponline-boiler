@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Dashboard from '../containers/Dashboard';
 import SearchContainer from '../containers/Search';
+import PlaygroundContainer from '../containers/Playground';
 import {pagePath} from '../constants/config';
 import { withRouter } from 'react-router';
 import travelWrapper from '../components/TravelHOC';
@@ -18,6 +19,7 @@ const AppRoutes = ()=>  (
                         <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
                         <Route exact path={`${pagePath}/search`} component={withRouter(travelWrapper(SearchContainer))} />
                         <Route exact path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(Dashboard))} />
+                        <Route exact path={`${pagePath}/test`} component={withRouter(travelWrapper(PlaygroundContainer))} />
                         
                      
                     </Switch>)

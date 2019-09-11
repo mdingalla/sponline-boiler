@@ -1,6 +1,7 @@
 import { ReactSelectProps } from "../node_modules/@types/react-select";
 import { IPersonaProps } from "../node_modules/office-ui-fabric-react/lib-es2015/Persona";
 import { IPersona } from "office-ui-fabric-react/lib/Persona";
+import { number } from "prop-types";
 
 /** TodoMVC model definitions **/
 declare interface AppConfig {
@@ -580,6 +581,7 @@ declare interface ContractFormState {
 declare interface SPContractData {
     Id?: number;
   ContentTypeId:any,
+  IPXEntityId:number,
   EntityId:number,
   EntityCode:string,
   EntityName:string,
@@ -596,4 +598,5 @@ declare interface CounterPartyControlState {
   id:number;
   selectedValue?:any;
   selectedBusinessType?:any;
+  spId?:number;
 }

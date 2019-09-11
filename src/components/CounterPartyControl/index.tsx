@@ -8,11 +8,14 @@ import SupplierClassificationDropdown from '../SupplierDropdown/classification';
 
 export namespace CounterPartyControl {
     export interface Props {
+        showDelete?:boolean;
         classification:string;
         selectedValue:any;
         selectedBusinessType:any;
         onChange:(e:CounterPartyControlState)=>void;
         id:number;
+        spId?:number;
+        onDelete:(e:CounterPartyControlState)=>void;
     }
 
     
@@ -25,8 +28,8 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
         this.state = {
             selectedBusinessType:this.props.selectedBusinessType,
             selectedValue:this.props.selectedValue,
-            id:this.props.id
-
+            id:this.props.id,
+            spId:this.props.spId
             // selectedValue: !this.props.classification || this.props.classification == Others ?  "" : EmptyReactSelectValue
         }
 
@@ -131,14 +134,32 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
             default:
                 break;
         }
+
+        const deleteBtn = this.props.showDelete ? <span className="input-group-btn">
+            <button type="button" 
+            onClick={()=>{this.props.onDelete(this.state)}}
+            className="btn btn-danger">
+            <span className="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button> 
+        </span> : null;
+
+        const businessType =  this.props.showDelete ? <React.Fragment>
+            <label className="col-md-2 control-label">Business Type</label>
+            <div className="col-md-4">
+            <div className="input-group">
+            {counterPartyClassification}{deleteBtn}
+            </div>
+            </div>
+            </React.Fragment> : <React.Fragment>
+                <label className="col-md-2 control-label">Business Type</label>
+            <div className="col-md-4">
+                {counterPartyClassification}
+                </div>
+            </React.Fragment>
+
         
         return <React.Fragment>
             {counterParty}
-            <label className="col-md-2 control-label">Business Type</label>
-                        <div className="col-md-4">
-                        {counterPartyClassification}
-                        </div>
-
+            {businessType}
         </React.Fragment>
 
     }
