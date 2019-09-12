@@ -1,9 +1,10 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { DatePicker, IPersonaProps } from "../../../node_modules/office-ui-fabric-react";
+import { IPersonaProps } from "../../../node_modules/office-ui-fabric-react";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
 import * as Modal from "react-bootstrap/lib/Modal";
+import DatePicker from 'react-datepicker';
 
 import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
@@ -23,6 +24,11 @@ import AdditionalDocumentDialog from "../AdditionalDocumentModal";
 
 import "!style-loader!css-loader!./index.css";
 import "!style-loader!css-loader!sweetalert2/dist/sweetalert2.css"
+import "!style-loader!css-loader!react-datepicker/dist/react-datepicker.min.css";
+import SharePointModalDialog from "../SharePointModalDialog";
+import { isDate } from "moment";
+import moment = require("moment");
+import { CustomDatePicker } from "../CustomDatePicker";
 
 interface ModalReloadProps {
     showModal: boolean;
@@ -105,6 +111,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.handleAdditonalModalOk = this.handleAdditonalModalOk.bind(this);
         this.handleCounterPartyChanges = this.handleCounterPartyChanges.bind(this);
         this.handleCounterPartyDelete = this.handleCounterPartyDelete.bind(this);
+        this.handleDuration = this.handleDuration.bind(this);
 
         const {contract} = this.props;
 
@@ -119,7 +126,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             showRelationShipModal:false,
             showAdditonalDocumentModal:false,
             selectedCounterPartyId:null,
-            upFiles:[]
+            upFiles:[],
+            issaving:contract.issaving,
+            status:contract.status
         }
     }
 
@@ -227,6 +236,25 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.props.contractactions.CreateOrUpdateContract(this.state,this.props.history)
     }
 
+
+    handleDuration(isYear:boolean,value){
+        if(!isNaN(value) && isDate(this.state.effectiveDate))
+        {
+            if(isYear)
+            {
+                this.setState({
+                    expiryDate:moment(this.state.effectiveDate).add(value,'year').toDate()
+                })
+            }
+            else
+            {
+                this.setState({
+                    expiryDate:moment(this.state.effectiveDate).add(value,'month').toDate()
+                })
+            }
+        }
+    }
+
     componentDidMount(){
         const Id = this.props.match.params["id"];
         if(Id){
@@ -240,6 +268,27 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
 
     static getDerivedStateFromProps(props:ContractForm.Props,state:ContractFormState){
+        if(props.contract.status == "SAVED" && state.status != props.contract.status)
+        {
+            MySwal.fire('Contract Saved','Saved','success')
+                .then((x)=>{
+                    props.contractactions.ContractFormChanges({
+                        status:state.status
+                    })
+
+                    if(state.status == "NEW" || state.status == "EDIT")
+                    {
+                        props.contractactions.NavigateContract(props.history,props.contract.id)
+                    }
+                    
+                })
+        }
+
+        if(props.contract.issaving != state.issaving){
+            return {
+                issaving:props.contract.issaving
+            } as ContractFormState
+        }
         if(props.contract.id && props.contract.id != state.id){
             const {contract} = props;
             return {
@@ -253,13 +302,20 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 entity:contract.contractingEntity,
                 owner:contract.owner,
                 counterparties:contract.counterparties,
+                issaving:contract.issaving,
+                status:contract.status,
             } as ContractFormState
         }
+
+        
 
         return null;
     }
 
     render(){
+
+        const spModalDialog = this.state.issaving ? <SharePointModalDialog message={"Saving..."} /> : null;
+
         const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0] : null;
 
         const primaryCounterParty =  <div className="form-group">
@@ -274,7 +330,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             classification={this.state.classification.value} />
         </div>
 
-        const durationPanel = !this.state.expiryDate ? <React.Fragment>
+        const durationPanel =  <React.Fragment>
                         <label className="col-md-2 control-label">Set Duration if Expiry Date is blank</label>
                         <div className="col-md-4">
                         <div className="row">
@@ -282,7 +338,11 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                                 <div className="row">
                                     <label className="control-label col-md-5">Years</label>
                                     <div className="col-md-7">
-                                        <input type="number" className="form-control"/>
+                                        <input type="number" 
+                                        onChange={(e)=>{
+                                            this.handleDuration(true,e.currentTarget.value)
+                                        }}
+                                        value={this.state.yearDuration} className="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -291,14 +351,18 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                                 <div className="row">
                                     <label className="control-label col-md-5">Months</label>
                                     <div className="col-md-7">
-                                        <input type="number" className="form-control"/>
+                                        <input type="number"
+                                         onChange={(e)=>{
+                                            this.handleDuration(false,e.currentTarget.value)
+                                        }}
+                                       value={this.state.monthDuration}   className="form-control"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                             
                         </div>
-                        </React.Fragment> : null;
+                        </React.Fragment>;
 
 
         const RelationshipmodalDialog =  <ContractingPartiesModal
@@ -319,7 +383,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             <h4 className="pageTitle">Contract Meta Data</h4>
             <div className="col-md-12">
                 <div className="form form-horizontal">
-
+                        {spModalDialog}
                     <div className="form-group">
                         <label className="col-md-2 control-label">Contract Types</label>
                         <div className="col-md-4">
@@ -356,15 +420,14 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
                         <label className="col-md-2 control-label">Effective Date</label>
                         <div className="col-md-4">
-                        <DatePicker strings={DayPickerStrings} 
-                        // ref="effectiveDate"
-                            allowTextInput={ true }
-                            onSelectDate={ date => {
+                        <CustomDatePicker
+                            selected={this.state.effectiveDate}
+                            onChange={ date => {
                                 this.setState({
                                     effectiveDate:date
                                 })
                             } }
-                            value={this.state.effectiveDate} placeholder='Select a date...' />
+                            />
                         </div>
 
                        
@@ -403,15 +466,14 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     <div className="form-group">
                         <label className="col-md-2 control-label">Expiry Date</label>
                         <div className="col-md-4">
-                            <DatePicker strings={DayPickerStrings} 
-                            // ref="expiryDate"
-                                allowTextInput={ true }
-                                onSelectDate={ date => {
-                                    this.setState({
-                                        expiryDate:date
-                                    })
-                                } }
-                                value={this.state.expiryDate} placeholder='Select a date...' />
+                        <CustomDatePicker
+                            selected={this.state.expiryDate}
+                            onChange={ date => {
+                                this.setState({
+                                    expiryDate:date
+                                })
+                            } }
+                            />
                         </div>
                         {durationPanel}
                     </div>
@@ -492,7 +554,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                             <button type="button" 
                             onClick={this.handleSave}
                             className="btn btn-success">Upload and Save</button>
-                            <button type="button" className="btn btn-danger">Close</button>
+                            <button type="button"
+                            onClick={this.props.contractactions.NavigateHome}
+                             className="btn btn-danger">Close</button>
                      </div>
                     
                 </div>

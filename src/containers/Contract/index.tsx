@@ -4,22 +4,11 @@ import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { RootState } from "../../reducers";
 
-import "!style-loader!css-loader!./override.css";
-// import {
-//   DashboardModel,
-//   AppProfile,
-//   LocalizedData,
-//   AppConfig
-// } from "../../../types/models";
-// import * as DashboardActions from "../../actions/dashboard";
 import * as ContractActions from "../../actions/contract";
-import DashboardPage from "../../components/Dashboard";
-import { Toggle } from "office-ui-fabric-react/lib/Toggle";
 import ContractForm from "../../components/ContractForm";
 import { AppConfig, ContractFormView } from "../../../types/models";
-import { HomePage } from "../../components/HomePage";
 
-export namespace Dashboard {
+export namespace Contract {
   export interface Props extends RouteComponentProps<void> {
     appconfig: AppConfig;
     contract: ContractFormView;
@@ -36,7 +25,7 @@ export namespace Dashboard {
 }
 
 // @connect(mapStateToProps, mapDispatchToProps)
-class Dashboard extends React.Component<Dashboard.Props, Dashboard.State> {
+class Contract extends React.Component<Contract.Props, Contract.State> {
   componentDidMount() {
     let titlerow = document.getElementById("titlerow");
     if (titlerow) titlerow.style.display = "none";
@@ -56,7 +45,7 @@ class Dashboard extends React.Component<Dashboard.Props, Dashboard.State> {
     // if(sideNavBox) sideNavBox.style.display = "block";
   }
 
-  componentWillReceiveProps(nextProps: Dashboard.Props) {
+  componentWillReceiveProps(nextProps: Contract.Props) {
     // if (
     //   nextProps.profile.User &&
     //   nextProps.profile.User.Title &&
@@ -70,9 +59,9 @@ class Dashboard extends React.Component<Dashboard.Props, Dashboard.State> {
     const { children } = this.props;
     return (
       <div className="row-fluid">
-        <HomePage {...this.props} />
-        {/* <DashboardPage {...this.props} /> */}
        
+        {/* <DashboardPage {...this.props} /> */}
+        <ContractForm {...this.props} />
         {children}
       </div>
     );
@@ -99,4 +88,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Dashboard);
+)(Contract);

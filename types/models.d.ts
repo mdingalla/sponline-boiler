@@ -555,6 +555,8 @@ declare interface ContractFormView {
   function:ReactSelectValue;
   counterparties:CounterParty[];
   owner:IPersonaProps[];
+  issaving:boolean;
+  status:"SAVED" | "NEW" | "EDIT"
 }
 
 
@@ -574,7 +576,9 @@ declare interface ContractFormState {
   showRelationShipModal:boolean;
   showAdditonalDocumentModal:boolean;
   selectedCounterPartyId?:number;
-  upFiles:File[]
+  upFiles:File[];
+  issaving:boolean;
+  status:"SAVED" | "NEW" | "EDIT"
 }
 
 

@@ -10,7 +10,7 @@ import { func } from "prop-types";
 import { RootState } from "../reducers";
 import LegalWebApi from "../api/LegalWebApi";
 import { PlantMaster } from "../api/iconnectApi";
-import { pagePath, Vendor, Others, Entity, homePagePath } from "../constants/config";
+import { pagePath, Vendor, Others, Entity, homePagePath, uploadPagePath } from "../constants/config";
 
 export const ContractFormChanges = createAction<Partial<ContractFormView>>(
     Actions.CONTRACT_CHANGED
@@ -89,6 +89,10 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
         if(!isValid.valid) return;
 
 
+        dispatch(ContractFormChanges({
+            issaving:true
+        }))
+
         Promise.all([
             PlantMaster.GetPlantByCompanyCode(payload.entity.value),
             LegalWebApi.GetClassificationByKeyValue(payload.classification.value)
@@ -98,7 +102,7 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
 
             const classificationResults = results[1];
             const spClassification = classificationResults && classificationResults.length > 0 ? classificationResults[0] : null;
-
+            let ParentId = payload.id;
             if(payload.upFiles.length > 0)
             {
                 const mFileRequest =  payload.upFiles.map(async (file)=>{
@@ -127,7 +131,7 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
     
                          return await  fileResult.file.getItem("Id")
                                 .then(async (spFile)=>{
-                                const ParentId = spFile["ID"];
+                                 ParentId = spFile["ID"];
     
                                 await spFile.update({
                                     ContentTypeId:payload.contentTypes.value,
@@ -155,7 +159,15 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                })
                Promise.all(mFileRequest)
                 .then(()=>{
-                    history.push(`${homePagePath}`)
+
+                    dispatch(ContractFormChanges({
+                        issaving:false,
+                        status:"SAVED",
+                        id:ParentId,
+
+                    }))
+                    // dispatch(UpdateContractCounterParties(ParentId))
+                   // history.push(`${homePagePath}`)
                     // console.log('Done')
                 })
             }
@@ -164,11 +176,17 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                 await UpdateContractData(payload,plantMaster,spClassification)
 
                 await AddOrUpdateCounterParties(payload.id,CounterParties);
-                    history.push(`${homePagePath}`)
+                dispatch(ContractFormChanges({
+                    issaving:false,
+                    status:"SAVED",
+                    id:ParentId
+                }))
+                // dispatch(UpdateContractCounterParties(ParentId))
+                  //  history.push(`${homePagePath}`)
                     // console.log('Done')
             }
            
-
+            
            
 
             // dispatch(ContractFormChanges({
@@ -206,8 +224,8 @@ async function UpdateContractData(payload:ContractFormState,plantMaster,spClassi
 
 function AddOrUpdateCounterParties(parentid,cps:CounterParty[]){
     return Promise.all(
-        cps.map(cp=>{
-            LegalWebApi.AddOrUpdateCounterParty(parentid,cp)
+        cps.map(async cp=>{
+           await LegalWebApi.AddOrUpdateCounterParty(parentid,cp)
         })
     );
 }
@@ -245,6 +263,7 @@ export function GetContract(id){
                     dispatch(ContractFormChanges({
                         id:spContract.Id,
                         owner:owner,
+                        status:"EDIT",
                         contractingEntity:{
                             // value:spContract.EntityId.toString(),
                             value:spContract.IPXEntityId.toString(),
@@ -272,7 +291,7 @@ export function GetContract(id){
 
                             let cpEntity ={
                                 label:cp.Title,
-                                value:cp.Title
+                                value:cp.CounterPartyRefId
                             } as ReactSelectValue
                             // if(cp.ClassificationKV == Entity)
                             // {
@@ -292,7 +311,6 @@ export function GetContract(id){
                                 
                             } as CounterParty
                         })
-
                     }))
                 })
 
@@ -301,11 +319,57 @@ export function GetContract(id){
     }
 }
 
+
+function UpdateContractCounterParties(id){
+    return function(dispatch)
+    {
+        LegalWebApi.GetCounterPartiesByParentId(id)
+            .then((counterparties)=>{
+                dispatch(ContractFormChanges({
+                    counterparties:counterparties.map((cp,idx)=>{
+
+                        let cpEntity ={
+                            label:cp.Title,
+                            value:cp.CounterPartyRefId
+                        } as ReactSelectValue
+                   
+                        return {
+                            Id:cp.Id,
+                            Classification:cp.ClassificationKV,
+                            PartyName:cp.ClassificationKV != Others ? cpEntity : cp.Title, 
+                            Nature:cp.ClassificationKV == Vendor ? {
+                                value:cp.BusinessType,
+                                label:cp.BusinessType
+                            } as ReactSelectValue : cp.BusinessType,
+                            
+                        } as CounterParty
+                    })
+                }))
+            })
+    }
+}
+
+export function NavigateContract(history:H.History,id){
+    return function(dispatch)
+    {
+        const myurl = `${pagePath}/edit/${id}`;
+        window.location.href = myurl;
+    }
+}
+
+export function NavigateHome(){
+    window.location.href = pagePath;
+}
+
+export function NavigateNewContract(){
+    window.location.href = uploadPagePath
+}
+
 export function NewContract(){
     return function(dispatch){
         dispatch(ContractFormChanges({
             counterparties:[{}],
-            
+            status:"NEW"
         }))
     }
 }

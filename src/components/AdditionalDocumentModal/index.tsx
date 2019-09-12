@@ -53,15 +53,7 @@ export default class AdditionalDocumentDialog extends React.Component<Additional
 
         return <React.Fragment>
             <Modal.Body>
-                <Tabs>
-                    <Tab eventKey="0" title="New Document">
-
-                    </Tab>
-
-                    <Tab eventKey="1" title="Search">
-                            <SearchForm/>
-                    </Tab>
-                </Tabs>
+            <SearchForm/>
             </Modal.Body>
             <Modal.Footer>
                 <div>

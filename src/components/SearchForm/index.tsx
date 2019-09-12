@@ -1,8 +1,5 @@
-
-
-
-
 import * as React from "react";
+import DatePicker from 'react-datepicker';
 
 // import * as DashboardActions from "../../actions/dashboard";
 import { RouteComponentProps } from "../../../node_modules/@types/react-router";
@@ -26,7 +23,8 @@ import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
 // import LocalizatonApi from "../../sharepointapi/localizationApi";
 // import PTCApprovalHistoryDashboardTable from "./ptcapprovalhistory";
 import SPClientPeoplePicker from "../SPPeoplePicker/";
-import { IPersonaProps, DatePicker } from "office-ui-fabric-react";
+import { IPersonaProps } from "office-ui-fabric-react";
+import { CustomDatePicker } from "../CustomDatePicker";
 
 export namespace SearchForm {
   export interface Props {
@@ -106,27 +104,23 @@ SearchForm.State
                         <div className="col-md-4">
                            <div className="row">
                                <div className='col-md-6'>
-                                <DatePicker strings={DayPickerStrings} 
-                                // ref="effectiveDate"
-                                    allowTextInput={ true }
-                                    onSelectDate={ date => {
+                               <CustomDatePicker
+                                    selected={this.state.effectiveDate}
+                                    onChange={ date => {
                                         this.setState({
                                             effectiveDate:date
                                         })
-                                    } }
-                                    value={this.state.effectiveDate} placeholder='Select a date...' />
+                                    } }/>
                                 
                                </div>
                                <div className="col-md-6">
-                               <DatePicker strings={DayPickerStrings} 
-                            //    ref="effectiveDate"
-                                    allowTextInput={ true }
-                                    onSelectDate={ date => {
+                               <CustomDatePicker
+                                    selected={this.state.effectiveDate}
+                                    onChange={ date => {
                                         this.setState({
                                             effectiveDate:date
                                         })
-                                    } }
-                                    value={this.state.effectiveDate} placeholder='Select a date...' />
+                                    } }/>
                                </div>
                            </div>
                                 
@@ -137,26 +131,22 @@ SearchForm.State
 
                             <div className="row">
                                 <div className="col-md-6">
-                                    <DatePicker strings={DayPickerStrings} 
-                                    // ref="expiryDate"
-                                    allowTextInput={ true }
-                                    onSelectDate={ date => {
+                                <CustomDatePicker
+                                    selected={this.state.expiryDate}
+                                    onChange={ date => {
                                         this.setState({
                                             expiryDate:date
                                         })
-                                    } }
-                                    value={this.state.expiryDate} placeholder='Select a date...' />
+                                    } }/>
                                 </div>
                                 <div className="col-md-6">
-                                    <DatePicker strings={DayPickerStrings} 
-                                    // ref="expiryDate"
-                                    allowTextInput={ true }
-                                    onSelectDate={ date => {
+                                <CustomDatePicker
+                                    selected={this.state.expiryDate}
+                                    onChange={ date => {
                                         this.setState({
                                             expiryDate:date
                                         })
-                                    } }
-                                    value={this.state.expiryDate} placeholder='Select a date...' />
+                                    } }/>
                                 </div>
                             </div>
                         </div>

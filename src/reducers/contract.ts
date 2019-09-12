@@ -14,7 +14,9 @@ const initialState: ContractFormView = {
     expiryDate:null,
     function:EmptyReactSelectValue,
     owner:[],
-    relationship:EmptyReactSelectValue
+    relationship:EmptyReactSelectValue,
+    issaving:false,
+    status:"NEW"
 }
 
 export default handleActions<ContractFormView, any>(
