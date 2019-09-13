@@ -1,5 +1,6 @@
 import * as React from "react";
 import DatePicker from 'react-datepicker';
+import * as CamlBuilder from 'camljs';
 
 // import * as DashboardActions from "../../actions/dashboard";
 import { RouteComponentProps } from "../../../node_modules/@types/react-router";
@@ -25,6 +26,8 @@ import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
 import SPClientPeoplePicker from "../SPPeoplePicker/";
 import { IPersonaProps } from "office-ui-fabric-react";
 import { CustomDatePicker } from "../CustomDatePicker";
+import LegalWebApi from "../../api/LegalWebApi";
+import { RenderListDataOptions } from "@pnp/sp";
 
 export namespace SearchForm {
   export interface Props {
@@ -40,14 +43,17 @@ export namespace SearchForm {
     contentTypes?:ReactSelectValue;
     department?:any;
     entity?:ReactSelectValue;
-    effectiveDate?:any;
-    expiryDate?:any;
+    effectiveDateFrom?:any;
+    effectiveDateTo?:any
+    expiryDateFrom?:any;
+    expiryDateTo?:any;
     monthDuration?:number;
     yearDuration?:number;
     owner?: IPersonaProps[];
     counterparties?:CounterParty[];
     showModal:boolean;
-    selectedCounterPartyId?:number
+    selectedCounterPartyId?:number;
+    result:any[];
   }
 }
 
@@ -58,6 +64,8 @@ SearchForm.State
   constructor(props) {
     super(props);
 
+    this.handleSearch = this.handleSearch.bind(this);
+
     this.state = {
         classification:EmptyReactSelectValue,
         category:EmptyReactSelectValue,
@@ -67,8 +75,49 @@ SearchForm.State
         counterparties:[{}],
         entity:EmptyReactSelectValue,
         showModal:false,
-        selectedCounterPartyId:null
+        selectedCounterPartyId:null,
+        result:[]
     }
+  }
+
+  handleSearch(){
+    let camlquery = new CamlBuilder();
+
+    const contentType = this.state.contentTypes && this.state.contentTypes.value ?
+      CamlBuilder.Expression().ContentTypeIdField("ContentTypeId").EqualTo(this.state.contentTypes.value) : 
+      CamlBuilder.Expression().ContentTypeIdField("ContentTypeId").IsNotNull();
+    
+    const entity = this.state.entity && this.state.entity.value ? 
+      CamlBuilder.Expression().LookupField("IPXEntity").Id().EqualTo(parseInt(this.state.entity.value)) :
+      CamlBuilder.Expression().LookupField("IPXEntity").Id().IsNotNull();
+    
+    const category = this.state.category && this.state.category.value ? 
+      CamlBuilder.Expression().LookupField("ContractCategory").Id().EqualTo(parseInt(this.state.category.value)) : 
+      CamlBuilder.Expression().LookupField("ContractCategory").Id().IsNotNull();
+
+    const mfunction = this.state.department ?
+        CamlBuilder.Expression().TextField("FunctionDept").EqualTo(this.state.department) : 
+        CamlBuilder.Expression().TextField("FunctionDept").IsNotNull();
+
+    const owner = this.state.owner && this.state.owner.length > 0 ? 
+        CamlBuilder.Expression().UserField("ContractOwner").Id().EqualTo(parseInt(this.state.owner[0]["key"])) : 
+        CamlBuilder.Expression().UserField("ContractOwner").Id().IsNotNull();
+
+    const query = camlquery.Where().All([contentType,entity,category,mfunction,owner]).ToString();
+
+  
+
+    LegalWebApi.QueryContract(
+        {
+            ViewXml:`<View>
+                <Query>
+                    ${query}
+                </Query>
+            </View>`
+        }
+    ).then((data)=>{
+        console.log(data)
+    })
   }
 
   
@@ -105,20 +154,20 @@ SearchForm.State
                            <div className="row">
                                <div className='col-md-6'>
                                <CustomDatePicker
-                                    selected={this.state.effectiveDate}
+                                    selected={this.state.effectiveDateFrom}
                                     onChange={ date => {
                                         this.setState({
-                                            effectiveDate:date
+                                            effectiveDateFrom:date
                                         })
                                     } }/>
                                 
                                </div>
                                <div className="col-md-6">
                                <CustomDatePicker
-                                    selected={this.state.effectiveDate}
+                                    selected={this.state.effectiveDateTo}
                                     onChange={ date => {
                                         this.setState({
-                                            effectiveDate:date
+                                            effectiveDateTo:date
                                         })
                                     } }/>
                                </div>
@@ -132,19 +181,19 @@ SearchForm.State
                             <div className="row">
                                 <div className="col-md-6">
                                 <CustomDatePicker
-                                    selected={this.state.expiryDate}
+                                    selected={this.state.expiryDateFrom}
                                     onChange={ date => {
                                         this.setState({
-                                            expiryDate:date
+                                            expiryDateFrom:date
                                         })
                                     } }/>
                                 </div>
                                 <div className="col-md-6">
                                 <CustomDatePicker
-                                    selected={this.state.expiryDate}
+                                    selected={this.state.expiryDateTo}
                                     onChange={ date => {
                                         this.setState({
-                                            expiryDate:date
+                                            expiryDateTo:date
                                         })
                                     } }/>
                                 </div>
@@ -191,7 +240,9 @@ SearchForm.State
                     </div>       
                                 
                 <div className="pull-right">
-                    <button type="button" className="btn btn-primary">Search</button>
+                    <button type="button" 
+                    onClick={this.handleSearch}
+                    className="btn btn-primary">Search</button>
                 </div>
             </div>
         </div>

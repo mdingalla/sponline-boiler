@@ -136,6 +136,10 @@
   version "3.5.27"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.27.tgz#61eb4d75dc6bfbce51cf49ee9bbebe941b2cb5d0"
 
+"@types/camljs@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@types/camljs/-/camljs-0.0.31.tgz#9911b46cdbb261e0af970fc2f8612cceafee5099"
+
 "@types/caseless@*":
   version "0.12.2"
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
@@ -1475,6 +1479,10 @@ camelcase@^4.0.0, camelcase@^4.1.0:
 camelcase@^5.0.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
+
+camljs@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/camljs/-/camljs-2.11.0.tgz#d5a541f6fc051e85c37e358d012d3175e3c2653f"
 
 caniuse-api@^1.5.2:
   version "1.6.1"

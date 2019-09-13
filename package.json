@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/bluebird": "^3.5.16",
+    "@types/camljs": "0.0.31",
     "@types/classnames": "2.2.3",
     "@types/history": "4.6.2",
     "@types/node": "8.0.53",
@@ -89,6 +90,7 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^3.3.7",
     "bowser": "^2.4.0",
+    "camljs": "^2.11.0",
     "canvas-datagrid": "^0.22.8",
     "classnames": "^2.2.5",
     "connected-react-router": "^4.4.1",

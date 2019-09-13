@@ -1,4 +1,4 @@
-import {sp} from '@pnp/sp'
+import {sp, RenderListDataOptions, RenderListDataParameters} from '@pnp/sp'
 import { SPContractData, CounterParty, ReactSelectValue } from '../../types/models';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import UserApi from './userApi';
@@ -196,6 +196,15 @@ class LegalWebApi {
       return myWeb.lists.getByTitle(CONTRACTCOUNTERPARTIES)
         .items.getById(spId).delete()
   }
+
+
+  static QueryContract(params:RenderListDataParameters){
+    return myWeb.lists.getByTitle(CONTRACTS)
+      .renderListDataAsStream(params)
+  }
+
+
+
 }
 
 export default LegalWebApi;
