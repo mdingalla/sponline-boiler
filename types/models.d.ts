@@ -3,6 +3,18 @@ import { IPersonaProps } from "../node_modules/office-ui-fabric-react/lib-es2015
 import { IPersona } from "office-ui-fabric-react/lib/Persona";
 import { number } from "prop-types";
 
+
+declare interface ListDataAsStreamResult {
+  CurrentFolderSpItemUrl:any;
+  FilterLink:string;
+  FirstRow:number;
+  FolderPermissions:string;
+  ForceNoHierarchy:string;
+  HierarchyHasIndention:string;
+  LastRow:number;
+  Row:any[];
+  RowLimit:number;
+}
 /** TodoMVC model definitions **/
 declare interface AppConfig {
   IsProduction?: boolean;
@@ -577,6 +589,7 @@ declare interface ContractFormState {
   showAdditonalDocumentModal:boolean;
   selectedCounterPartyId?:number;
   upFiles:File[];
+  upDocs:any[];
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
 }
@@ -603,4 +616,10 @@ declare interface CounterPartyControlState {
   selectedValue?:any;
   selectedBusinessType?:any;
   spId?:number;
+}
+
+
+declare interface CounterPartyControlSearchState {
+  selectedValue?:any;
+  classification?:any;
 }

@@ -203,6 +203,10 @@ class LegalWebApi {
       .renderListDataAsStream(params)
   }
 
+  static QueryContractCounterParty(filter){
+    return myWeb.lists.getByTitle(CONTRACTCOUNTERPARTIES)
+      .items.filter(filter).getAll()
+  }
 
 
 }

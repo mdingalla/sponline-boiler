@@ -127,6 +127,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             showAdditonalDocumentModal:false,
             selectedCounterPartyId:null,
             upFiles:[],
+            upDocs:[],
             issaving:contract.issaving,
             status:contract.status
         }
@@ -192,15 +193,18 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     }
 
     handleAdditonalModalOk(e){
-        !this.isCancelled &&
-            this.setState({
-
-            },()=>{
-                !this.isCancelled && 
-                this.setState({
-                    showAdditonalDocumentModal:false
-                })
-            })
+        console.log(e)
+        !this.isCancelled && 
+        this.setState({
+            upDocs:this.state.upDocs.concat(e.selected),
+            showAdditonalDocumentModal:false
+        })
+        // !this.isCancelled &&
+        //     this.setState({
+        //         // upDocs:this.state.upDocs.concat(e)
+        //     },()=>{
+              
+        //     })
     }
     
     handleModalClose() {
@@ -528,6 +532,12 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
                     <fieldset className="form-group">
                     <legend><h5 className="page-title">Related Documents</h5></legend>
+
+                    {this.state.upDocs.map((file)=>{
+                        return <div>
+                            
+                        </div>
+                    })}
                     
                     <div className="pull-right">
                         <button type="button" className="btn btn-primary"
