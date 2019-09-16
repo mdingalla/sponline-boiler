@@ -29,6 +29,10 @@ import SharePointModalDialog from "../SharePointModalDialog";
 import { isDate } from "moment";
 import moment = require("moment");
 import { CustomDatePicker } from "../CustomDatePicker";
+import ContractItem from "../ContractItem";
+import * as _ from "lodash";
+import { ContractRelatedList } from "../ContractItem/list";
+import contract from "../../reducers/contract";
 
 interface ModalReloadProps {
     showModal: boolean;
@@ -112,6 +116,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         this.handleCounterPartyChanges = this.handleCounterPartyChanges.bind(this);
         this.handleCounterPartyDelete = this.handleCounterPartyDelete.bind(this);
         this.handleDuration = this.handleDuration.bind(this);
+        this.handleDeleteRelatedDocs = this.handleDeleteRelatedDocs.bind(this);
 
         const {contract} = this.props;
 
@@ -128,6 +133,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             selectedCounterPartyId:null,
             upFiles:[],
             upDocs:[],
+            relatedDocs:contract.relateddocs,
             issaving:contract.issaving,
             status:contract.status
         }
@@ -193,10 +199,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     }
 
     handleAdditonalModalOk(e){
-        console.log(e)
+        // console.log(e)
         !this.isCancelled && 
         this.setState({
-            upDocs:this.state.upDocs.concat(e.selected),
+            upDocs:_.uniq(this.state.upDocs.concat(e.selected)),
             showAdditonalDocumentModal:false
         })
         // !this.isCancelled &&
@@ -259,6 +265,17 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         }
     }
 
+    handleDeleteUploadedRelatedDocs(id){
+        const doc = this.state.upDocs[id];
+        this.setState({
+            upDocs:this.state.upDocs.filter(x=>x != doc)
+        })
+    }
+
+    handleDeleteRelatedDocs(id){
+        this.props.contractactions.DeleteRelatedDocs(id)
+    }
+
     componentDidMount(){
         const Id = this.props.match.params["id"];
         if(Id){
@@ -272,6 +289,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
 
     static getDerivedStateFromProps(props:ContractForm.Props,state:ContractFormState){
+        const {contract} = props;
         if(props.contract.status == "SAVED" && state.status != props.contract.status)
         {
             MySwal.fire('Contract Saved','Saved','success')
@@ -293,8 +311,13 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 issaving:props.contract.issaving
             } as ContractFormState
         }
+        if(props.contract.relateddocs.length != state.relatedDocs.length){
+            return {
+                 relatedDocs:contract.relateddocs
+            } as ContractFormState
+        }
         if(props.contract.id && props.contract.id != state.id){
-            const {contract} = props;
+           
             return {
                 category:contract.category,
                 classification:contract.relationship,
@@ -308,6 +331,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 counterparties:contract.counterparties,
                 issaving:contract.issaving,
                 status:contract.status,
+                relatedDocs:contract.relateddocs
             } as ContractFormState
         }
 
@@ -532,12 +556,21 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
                     <fieldset className="form-group">
                     <legend><h5 className="page-title">Related Documents</h5></legend>
+                    
+                    <div>
+                        <ContractRelatedList isBind={true}
+                        OnDelete={(e)=>{this.handleDeleteRelatedDocs(e)}}
+                        docs={this.state.relatedDocs.map((x)=>{
+                            return x.Id
+                        })} />
+                    </div>
 
-                    {this.state.upDocs.map((file)=>{
-                        return <div>
-                            
-                        </div>
-                    })}
+                    <div>
+                        <ContractRelatedList isBind={false}
+                        OnDelete={(e)=>{this.handleDeleteUploadedRelatedDocs(e)}}
+                        docs={this.state.upDocs} />
+                    </div>
+                    
                     
                     <div className="pull-right">
                         <button type="button" className="btn btn-primary"

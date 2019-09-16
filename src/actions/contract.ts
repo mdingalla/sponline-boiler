@@ -119,6 +119,8 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                                 await UpdateContractData(payload,plantMaster,spClassification)
     
                                 await AddOrUpdateCounterParties(payload.id,CounterParties);
+
+                                await AddRelatedDocuments(payload.id,payload.upDocs);
                                
                                 return Promise.resolve();
     
@@ -151,6 +153,8 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                                 await Promise.all(
                                     [AddOrUpdateCounterParties(ParentId,CounterParties)]
                                 )
+
+                                await AddRelatedDocuments(ParentId,payload.upDocs)
                                 
                                 return Promise.resolve();
                             })
@@ -158,8 +162,8 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                     }
                })
                Promise.all(mFileRequest)
-                .then(()=>{
-
+                .then(async ()=>{
+                    
                     dispatch(ContractFormChanges({
                         issaving:false,
                         status:"SAVED",
@@ -176,6 +180,9 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                 await UpdateContractData(payload,plantMaster,spClassification)
 
                 await AddOrUpdateCounterParties(payload.id,CounterParties);
+
+                await AddRelatedDocuments(payload.id,payload.upDocs)
+
                 dispatch(ContractFormChanges({
                     issaving:false,
                     status:"SAVED",
@@ -185,6 +192,9 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                   //  history.push(`${homePagePath}`)
                     // console.log('Done')
             }
+
+
+
            
             
            
@@ -193,13 +203,17 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
             //     ...contract,
             // }))
         })
-
-
-
-
         
     }
 
+}
+
+function AddRelatedDocuments(parentid,childid:number[]){
+    return Promise.all(
+        childid.map((x)=>{
+            return LegalWebApi.AddContractRelatedDocuments(parentid,x)
+        })
+    )
 }
 
 async function UpdateContractData(payload:ContractFormState,plantMaster,spClassification){
@@ -231,12 +245,30 @@ function AddOrUpdateCounterParties(parentid,cps:CounterParty[]){
 }
 
 
+
+
+
 export function DeleteContractParty(spId){
     return function(dispatch,getState:()=>RootState){
 
         const {contract} = getState();
         return LegalWebApi.DeleteCounterParty(spId)
            
+    }
+}
+
+export function DeleteRelatedDocs(id){
+    return function(dispatch,getState:()=>RootState){
+        const {contract} = getState();
+        LegalWebApi.DeleteRelatedDocs(id)
+            .then(()=>{
+                LegalWebApi.GetContractRelatedByParent(contract.id)
+                    .then((results)=>{
+                        dispatch(ContractFormChanges({
+                            relateddocs:results
+                        }))
+                    })
+            })
     }
 }
 
@@ -251,7 +283,8 @@ export function GetContract(id){
                    spContract.ContractClassificationId ? LegalWebApi.GetClassificationById(spContract.ContractClassificationId) : Promise.resolve(null),
                    spContract.ContentTypeId ? LegalWebApi.GetContentType(spContract.ContentTypeId) : Promise.resolve(null),
                    LegalWebApi.GetCounterPartiesByParentId(id),
-                   spContract.ContractOwnerId ? LegalWebApi.ConvertToPersona(spContract.ContractOwnerId) : Promise.resolve(null)
+                   spContract.ContractOwnerId ? LegalWebApi.ConvertToPersona(spContract.ContractOwnerId) : Promise.resolve(null),
+                   LegalWebApi.GetContractRelatedByParent(id)
                 ]).then((results)=>{
 
                     const category = results[0];
@@ -259,9 +292,11 @@ export function GetContract(id){
                     const contentTypes = results[2];
                     const counterparties = results[3];
                     const owner = [results[4]];
+                    const relatedcontracts = results[5];
 
                     dispatch(ContractFormChanges({
                         id:spContract.Id,
+                        relateddocs:relatedcontracts,
                         owner:owner,
                         status:"EDIT",
                         contractingEntity:{

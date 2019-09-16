@@ -569,6 +569,7 @@ declare interface ContractFormView {
   owner:IPersonaProps[];
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
+  relateddocs:any[];
 }
 
 
@@ -590,6 +591,7 @@ declare interface ContractFormState {
   selectedCounterPartyId?:number;
   upFiles:File[];
   upDocs:any[];
+  relatedDocs:any[];
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
 }

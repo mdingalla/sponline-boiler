@@ -16,7 +16,8 @@ const initialState: ContractFormView = {
     owner:[],
     relationship:EmptyReactSelectValue,
     issaving:false,
-    status:"NEW"
+    status:"NEW",
+    relateddocs:[]
 }
 
 export default handleActions<ContractFormView, any>(

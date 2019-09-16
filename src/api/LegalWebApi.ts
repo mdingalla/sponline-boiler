@@ -18,10 +18,19 @@ const CATEGORY = "Categories";
 const CONTRACTDOCUMENT = "Documents"
 const CONTRACTCOUNTERPARTIES = "ContractCounterParties";
 const COUNTERPARTYMASTER = "CounterPartyMaster";
+const CONTRACTRELATEDDOCUMENTS = "ContractRelatedDocuments";
 
 const myWeb = sp.web;
 
 class LegalWebApi {
+
+  static AddContractRelatedDocuments(parentid,id){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.add({
+         ParentId:parentid,
+         ChildDocumentId:id
+      })
+  }
 
   static GetContractData(id){
     return myWeb.lists.getByTitle(CONTRACTS)
@@ -31,6 +40,20 @@ class LegalWebApi {
   static GetContractDataFile(id){
     return myWeb.lists.getByTitle(CONTRACTS)
       .items.getById(id).file.get()
+  }
+
+  static GetContractRelatedChildFile(id){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.getById(id)
+      .get().then((childfile)=>{
+         return this.GetContractDataFile(childfile.ChildDocumentId)
+      })
+  }
+
+
+  static GetContractRelatedByParent(parentid){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.filter(`ParentId eq ${parentid}`).get()
   }
 
   static UpdateContractData(payload,id:number){
@@ -197,6 +220,11 @@ class LegalWebApi {
         .items.getById(spId).delete()
   }
 
+
+  static DeleteRelatedDocs(id){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.getById(id).delete()
+  }
 
   static QueryContract(params:RenderListDataParameters){
     return myWeb.lists.getByTitle(CONTRACTS)

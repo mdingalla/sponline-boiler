@@ -101,6 +101,7 @@ export default class SearchModalResultPanel extends React.Component<SearchModalR
                 data:props.data
             } as SearchModalResultPanel.State
         }
+        return null
     }
 
     handleOnSelect = (row, isSelect) => {
