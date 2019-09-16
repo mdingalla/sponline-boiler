@@ -284,7 +284,8 @@ export function GetContract(id){
                    spContract.ContentTypeId ? LegalWebApi.GetContentType(spContract.ContentTypeId) : Promise.resolve(null),
                    LegalWebApi.GetCounterPartiesByParentId(id),
                    spContract.ContractOwnerId ? LegalWebApi.ConvertToPersona(spContract.ContractOwnerId) : Promise.resolve(null),
-                   LegalWebApi.GetContractRelatedByParent(id)
+                   LegalWebApi.GetContractRelatedByParent(id),
+                   LegalWebApi.GetContractDataFile(id)
                 ]).then((results)=>{
 
                     const category = results[0];
@@ -293,9 +294,11 @@ export function GetContract(id){
                     const counterparties = results[3];
                     const owner = [results[4]];
                     const relatedcontracts = results[5];
+                    const contractfile = results[6];
 
                     dispatch(ContractFormChanges({
                         id:spContract.Id,
+                        contractfile:contractfile,
                         relateddocs:relatedcontracts,
                         owner:owner,
                         status:"EDIT",

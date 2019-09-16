@@ -570,6 +570,7 @@ declare interface ContractFormView {
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
   relateddocs:any[];
+  contractfile?:any;
 }
 
 
@@ -599,18 +600,19 @@ declare interface ContractFormState {
 
 declare interface SPContractData {
     Id?: number;
-  ContentTypeId:any,
-  IPXEntityId:number,
-  EntityId:number,
-  EntityCode:string,
-  EntityName:string,
-  Region:string,
-  ContractCategoryId:number,
-  ContractOwnerId:number,
-  FunctionDept:string,
-  ContractClassificationId:number,
-  EffectiveDate:string,
-  ExpiryDate:string
+  ContentTypeId:any;
+  IPXEntityId:number;
+  EntityId:number;
+  EntityCode:string;
+  EntityName:string;
+  Region:string;
+  ContractCategoryId:number;
+  ContractOwnerId:number;
+  FunctionDept:string;
+  ContractClassificationId:number;
+  EffectiveDate:string;
+  ExpiryDate:string;
+  ContentType:any;
 }
 
 declare interface CounterPartyControlState {

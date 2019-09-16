@@ -10,6 +10,7 @@ export namespace ContractRelatedItem {
 
     export interface State {
         contract:any;
+        file:any;
     }
 }
 
@@ -21,8 +22,13 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
         this.refresh = this.refresh.bind(this);
 
         this.state = {
-            contract:{
+            file:{
                 Name:''
+            },
+            contract:{
+                ContentType:{
+                    Name:''
+                }
             }
         }
     }
@@ -31,11 +37,17 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
 
         const myrequest = this.props.isBind ? LegalWebApi.GetContractRelatedChildFile(this.props.id) :
             LegalWebApi.GetContractDataFile(this.props.id);
-
+       
         myrequest.then((contract)=>{
-            !this.isCancelled && this.setState({
-                contract:contract
+            const mylist = LegalWebApi.GetContractData(contract.ChildDocumentId);
+            mylist.then((list)=>{
+                !this.isCancelled && this.setState({
+                    file:contract,
+                    contract:list
+                })
             })
+
+          
         })
     }
 
@@ -51,7 +63,15 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
 
     render(){
         return <div>
-        <label>{this.state.contract.Name} {this.props.id}</label>
+        <h5>
+        <label className="label label-default">{this.state.file.Name}
+         {/* {this.props.id} */}
+        </label>
+
+        <label className="label label-info">{this.state.contract.ContentType.Name}</label>
+        </h5>
+
+
     </div>
     }
 

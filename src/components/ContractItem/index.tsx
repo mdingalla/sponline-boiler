@@ -9,17 +9,6 @@ function PanelContainer(){
       );
 }
 
-
-// const ContractItem = async (props) => {
-    
-//     const contract = await LegalWebApi.GetContractDataFile(props.id)
-
-//     return <div>
-//         <label>{contract.Name} {props.id}</label>
-//     </div>
-// }
-
-
 async function ContractItem(props){
     const contract = await LegalWebApi.GetContractDataFile(props.id)
 

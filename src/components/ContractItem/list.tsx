@@ -3,6 +3,8 @@ import * as React from 'react';
 import ContractItem from '.';
 import { ContractRelatedItem } from './item';
 import MyUtility from '../../utility';
+import { homePagePath, pagePath } from '../../constants/config';
+import LegalWebApi from '../../api/LegalWebApi';
 
 
 export namespace ContractRelatedList {
@@ -23,6 +25,7 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
         super(props);
 
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleView = this.handleView.bind(this);
 
         this.state = {
             docs:this.props.docs
@@ -55,6 +58,20 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
         }
     }
 
+    handleView(e){
+        if(this.props.isBind)
+        {
+            LegalWebApi.GetContractRelated(e)
+                .then((childfile)=>{
+                    window.open(`${pagePath}/edit/${childfile.ChildDocumentId}`,"_blank")
+                })
+        }
+        else
+        {
+            window.open(`${pagePath}/edit/${e}`,"_blank")
+        }
+    }
+
 
     
 
@@ -63,10 +80,21 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
                         {this.state.docs.map((file,idx)=>{
                             return <li className="list-group-item" key={idx}>
                                 <ContractRelatedItem key={idx} id={file} isBind={this.props.isBind}  />
-                                <button type="button"  
-                                    onClick={(e)=>{this.handleDelete(this.props.isBind ? file : idx)}}
-                                    className="btn btn-danger">
-                                    <span className="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button> 
+                                <div className="row">
+                                    <div className="pull-right">
+                                            <button type="button"  
+                                            onClick={(e)=>{this.handleView(file)}}
+                                            className="btn btn-default">
+                                                View
+                                            </button>
+
+                                            <button type="button"  
+                                            onClick={(e)=>{this.handleDelete(this.props.isBind ? file : idx)}}
+                                            className="btn btn-danger">
+                                                Delete
+                                            </button>
+                                    </div> 
+                                </div>
                             </li>
                         })}
                     </ul>

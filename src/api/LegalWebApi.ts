@@ -34,7 +34,11 @@ class LegalWebApi {
 
   static GetContractData(id){
     return myWeb.lists.getByTitle(CONTRACTS)
-      .items.getById(id).get<SPContractData>();
+      .items
+      .getById(id)
+      .select("*,ContentType/Name")
+      .expand("ContentType")
+      .get<SPContractData>();
   }
 
   static GetContractDataFile(id){
@@ -48,6 +52,12 @@ class LegalWebApi {
       .get().then((childfile)=>{
          return this.GetContractDataFile(childfile.ChildDocumentId)
       })
+  }
+
+  static GetContractRelated(id){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.getById(id)
+      .get()
   }
 
 

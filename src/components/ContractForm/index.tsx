@@ -10,7 +10,7 @@ import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
-import { EmptyReactSelectValue, DayPickerStrings } from "../../constants/config";
+import { EmptyReactSelectValue, DayPickerStrings, pagePath } from "../../constants/config";
 import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState, CounterPartyControlState } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
@@ -331,7 +331,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 counterparties:contract.counterparties,
                 issaving:contract.issaving,
                 status:contract.status,
-                relatedDocs:contract.relateddocs
+                relatedDocs:contract.relateddocs,
+                
             } as ContractFormState
         }
 
@@ -341,6 +342,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     }
 
     render(){
+
+        const {contract} = this.props;
 
         const spModalDialog = this.state.issaving ? <SharePointModalDialog message={"Saving..."} /> : null;
 
@@ -406,6 +409,16 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             {...this.props}/>
 
         const allowMulti = !this.props.contract.id;
+
+        const contractfile = this.props.contract.contractfile ? <React.Fragment>
+            <h5>{contract.contractfile.Name}<span className="label label-default"></span></h5>
+            <a  className="btn btn-default"  target="_blank"
+            href={`${contract.contractfile.LinkingUri }`}>View</a>       
+            <a  className="btn btn-default"  target="_blank"
+            href={`${_spPageContextInfo.webAbsoluteUrl}/_layouts/download.aspx?SourceUrl=${contract.contractfile.ServerRelativeUrl}`}>
+                Download </a>   
+               
+        </React.Fragment> : null;
 
         return <div className="row">
             <h4 className="pageTitle">Contract Meta Data</h4>
@@ -544,12 +557,13 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         </div>
                         <label className="col-md-2 control-label">File</label>
                         <div className="col-md-4">
-                        <FileUploads
-                            textmessage={allowMulti ? "Upload Files Here" : "Replace Uploaded File"}
-                            multi={allowMulti}
-                            files={this.state.upFiles}
-                            onChange={this.handleUPFiles}
-                        />
+                            {contractfile}
+                            <div className="row">
+                             <FileUploads 
+                              multi={allowMulti}
+                              files={this.state.upFiles}
+                             textmessage={allowMulti ? "Upload Files Here" : "Replace Uploaded File Here"}
+                            onChange={this.handleUPFiles}/></div> 
                         </div>
                     </div>
                     
