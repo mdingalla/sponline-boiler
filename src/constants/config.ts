@@ -8,7 +8,8 @@ export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 
 export const uploadPagePath = `${pagePath}/new`
-
+export const searchPagePath = `${pagePath}/search`;
+export const editPagePath = `${pagePath}/edit/`;
 export const Vendor = "Vendor";
 export const Customer ="Customer";
 export const Entity = "Entity";

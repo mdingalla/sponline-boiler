@@ -25,9 +25,12 @@ import SPClientPeoplePicker from "../SPPeoplePicker/";
 import { IPersonaProps, DatePicker } from "office-ui-fabric-react";
 import SearchForm from "../SearchForm";
 import SearchResultPanel from "../SearchResult";
+import * as ContractActions from "../../actions/contract";
+
 
 export namespace SearchPage {
   export interface Props extends RouteComponentProps<void> {
+    contractactions: typeof ContractActions;
     // appconfig: AppConfig;
     // dashboardactions: typeof DashboardActions;
     // dashboard: DashboardModel;
@@ -85,7 +88,7 @@ SearchPage.State
   
   render() {
 
-    const mytable = this.state.data.length > 0 ? <SearchResultPanel data={this.state.data} /> : null
+    const mytable = this.state.data.length > 0 ? <SearchResultPanel data={this.state.data} {...this.props} /> : null
 
     return (
         <div className="form form-horizontal">
@@ -94,6 +97,15 @@ SearchPage.State
 
            <div className="row">
               {mytable}
+           </div>
+
+
+           <div className="row">
+            <div className="pull-right">
+            <button type="button"
+                            onClick={this.props.contractactions.NavigateHome}
+                             className="btn btn-danger">Close</button>
+            </div>
            </div>
         </div>
     );

@@ -33,6 +33,7 @@ import CounterPartySearch from "../CounterPartyControl/search";
 export namespace SearchForm {
   export interface Props {
     OnDataLoad:(e:ListDataAsStreamResult)=>void;
+    
   }
   export interface State {
     classification?:ReactSelectValue;

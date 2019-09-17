@@ -10,7 +10,7 @@ import { func } from "prop-types";
 import { RootState } from "../reducers";
 import LegalWebApi from "../api/LegalWebApi";
 import { PlantMaster } from "../api/iconnectApi";
-import { pagePath, Vendor, Others, Entity, homePagePath, uploadPagePath } from "../constants/config";
+import { pagePath, Vendor, Others, Entity, homePagePath, uploadPagePath, searchPagePath } from "../constants/config";
 
 export const ContractFormChanges = createAction<Partial<ContractFormView>>(
     Actions.CONTRACT_CHANGED
@@ -397,12 +397,24 @@ export function NavigateContract(history:H.History,id){
     }
 }
 
+export function NavigateContractPage(id){
+    return function(dispatch)
+    {
+        const myurl = `${pagePath}/edit/${id}`;
+        window.location.href = myurl;
+    }
+}
+
 export function NavigateHome(){
     window.location.href = pagePath;
 }
 
 export function NavigateNewContract(){
     window.location.href = uploadPagePath
+}
+
+export function NavigateSearch(){
+    window.location.href = searchPagePath;
 }
 
 export function NewContract(){

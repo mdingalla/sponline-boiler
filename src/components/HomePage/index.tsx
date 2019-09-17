@@ -24,8 +24,14 @@ export namespace HomePage {
 export const HomePage = (props:HomePage.Props)=> {
     return <div className="jumbotron">
         <p>Welcome to Legal Repository</p>
-        <p><button type="button"
+        <p>
+          <button type="button"
         onClick={props.contractactions.NavigateNewContract}
-         className="btn btn-primary">Upload Contract</button></p>
+         className="btn btn-primary">Upload Contract</button>
+
+<button type="button"
+        onClick={props.contractactions.NavigateSearch}
+         className="btn btn-success">Advance Search</button>
+         </p>
     </div>
 }

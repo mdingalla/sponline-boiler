@@ -39,6 +39,8 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
 
         let DocId = this.props.id;
 
+        if(!DocId) return;
+
         if(this.props.isBind)
         {
             const childfile = await LegalWebApi.GetContractRelatedChild(this.props.id);

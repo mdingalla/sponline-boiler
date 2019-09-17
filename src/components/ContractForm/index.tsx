@@ -582,7 +582,12 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     <div>
                         <ContractRelatedList isBind={false}
                         OnDelete={(e)=>{this.handleDeleteUploadedRelatedDocs(e)}}
-                        docs={this.state.upDocs} />
+                        docs={this.state.upDocs.map((x)=>{
+                            return {
+                                Id:x,
+                                isParent:false
+                            } as RelatedDocs
+                        })} />
                     </div>
                     
                     

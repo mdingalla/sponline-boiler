@@ -17,9 +17,11 @@ import DashboardPage from "../../components/Dashboard";
 import { Toggle } from "office-ui-fabric-react/lib/Toggle";
 import ContractForm from "../../components/ContractForm";
 import SearchPage from "../../components/SearchPage";
+import * as ContractActions from "../../actions/contract";
 
 export namespace SearchContainer {
   export interface Props extends RouteComponentProps<void> {
+    contractactions: typeof ContractActions;
     // appconfig: AppConfig;
     // dashboardactions: typeof DashboardActions;
     // ptcactions: typeof PTCActions;
@@ -87,8 +89,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    // dashboardactions: bindActionCreators(DashboardActions as any, dispatch),
-    // ptcactions: bindActionCreators(PTCActions as any, dispatch)
+    contractactions: bindActionCreators(ContractActions as any, dispatch),
   };
 }
 
