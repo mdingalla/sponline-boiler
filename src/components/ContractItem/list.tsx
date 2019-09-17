@@ -10,12 +10,13 @@ import LegalWebApi from '../../api/LegalWebApi';
 export namespace ContractRelatedList {
     export interface Props {
         isBind:boolean;
-        docs:number[];
+        docs:RelatedDocs[];
         OnDelete:(e)=>void;
+        parentId?:number;
     }
 
     export interface State {
-        docs:number[];
+        docs:RelatedDocs[];
     }
 }
 
@@ -63,7 +64,8 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
         {
             LegalWebApi.GetContractRelated(e)
                 .then((childfile)=>{
-                    window.open(`${pagePath}/edit/${childfile.ChildDocumentId}`,"_blank")
+                    const id = childfile.ChildDocumentId == this.props.parentId ? childfile.ParentId : childfile.ChildDocumentId;
+                    window.open(`${pagePath}/edit/${id}`,"_blank")
                 })
         }
         else
@@ -79,17 +81,17 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
         return  <ul className="list-group">
                         {this.state.docs.map((file,idx)=>{
                             return <li className="list-group-item" key={idx}>
-                                <ContractRelatedItem key={idx} id={file} isBind={this.props.isBind}  />
+                                <ContractRelatedItem key={idx} id={file.Id} isParent={file.isParent} isBind={this.props.isBind}  />
                                 <div className="row">
                                     <div className="pull-right">
                                             <button type="button"  
-                                            onClick={(e)=>{this.handleView(file)}}
+                                            onClick={(e)=>{this.handleView(file.Id)}}
                                             className="btn btn-default">
                                                 View
                                             </button>
 
                                             <button type="button"  
-                                            onClick={(e)=>{this.handleDelete(this.props.isBind ? file : idx)}}
+                                            onClick={(e)=>{this.handleDelete(this.props.isBind ? file.Id : idx)}}
                                             className="btn btn-danger">
                                                 Delete
                                             </button>

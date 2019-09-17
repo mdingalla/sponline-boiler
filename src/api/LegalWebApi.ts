@@ -46,6 +46,13 @@ class LegalWebApi {
       .items.getById(id).file.get()
   }
 
+
+  static GetContractRelatedChild(id){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.getById(id)
+      .get()
+  }
+
   static GetContractRelatedChildFile(id){
     return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
       .items.getById(id)
@@ -64,6 +71,35 @@ class LegalWebApi {
   static GetContractRelatedByParent(parentid){
     return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
       .items.filter(`ParentId eq ${parentid}`).get()
+  }
+
+  static GetContractRelatedByChild(parentid){
+    return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
+      .items.filter(`ChildDocumentId eq ${parentid}`).get()
+  }
+
+
+  static async GetContractRelatedDocs(parentid){
+    const parent = await this.GetContractRelatedByParent(parentid);
+
+    const child  = await this.GetContractRelatedByChild(parentid);
+
+    const parentdata = parent.map((x)=>{
+       return {
+         ...x,
+         isParent:true
+       }
+    })
+
+    const childdata = child.map((x)=>{
+      return {
+        ...x,
+        isParent:false
+      }
+    })
+
+    return parentdata.concat(childdata);
+
   }
 
   static UpdateContractData(payload,id:number){

@@ -10,3 +10,9 @@ declare interface ContractSummaryData {
     ExpiryDate?:string;
     Function?:string
 }
+
+
+declare interface RelatedDocs {
+    Id:number;
+    isParent:boolean;
+}

@@ -592,7 +592,7 @@ declare interface ContractFormState {
   selectedCounterPartyId?:number;
   upFiles:File[];
   upDocs:any[];
-  relatedDocs:any[];
+  relatedDocs:RelatedDocs[];
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
 }

@@ -262,7 +262,8 @@ export function DeleteRelatedDocs(id){
         const {contract} = getState();
         LegalWebApi.DeleteRelatedDocs(id)
             .then(()=>{
-                LegalWebApi.GetContractRelatedByParent(contract.id)
+                // LegalWebApi.GetContractRelatedByParent(contract.id)
+                LegalWebApi.GetContractRelatedDocs(contract.id)
                     .then((results)=>{
                         dispatch(ContractFormChanges({
                             relateddocs:results
@@ -284,7 +285,8 @@ export function GetContract(id){
                    spContract.ContentTypeId ? LegalWebApi.GetContentType(spContract.ContentTypeId) : Promise.resolve(null),
                    LegalWebApi.GetCounterPartiesByParentId(id),
                    spContract.ContractOwnerId ? LegalWebApi.ConvertToPersona(spContract.ContractOwnerId) : Promise.resolve(null),
-                   LegalWebApi.GetContractRelatedByParent(id),
+                //    LegalWebApi.GetContractRelatedByParent(id),
+                    LegalWebApi.GetContractRelatedDocs(id),
                    LegalWebApi.GetContractDataFile(id)
                 ]).then((results)=>{
 

@@ -572,10 +572,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                     <legend><h5 className="page-title">Related Documents</h5></legend>
                     
                     <div>
-                        <ContractRelatedList isBind={true}
+                        <ContractRelatedList isBind={true} parentId={this.props.contract.id}
                         OnDelete={(e)=>{this.handleDeleteRelatedDocs(e)}}
                         docs={this.state.relatedDocs.map((x)=>{
-                            return x.Id
+                            return x
                         })} />
                     </div>
 

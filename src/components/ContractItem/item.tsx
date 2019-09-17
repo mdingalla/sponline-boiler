@@ -6,6 +6,7 @@ export namespace ContractRelatedItem {
     export interface Props {
         id:number;
         isBind:boolean;
+        isParent:boolean;
     }
 
     export interface State {
@@ -33,13 +34,21 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
         }
     }
 
-    refresh(){
+    async refresh(){
 
-        const myrequest = this.props.isBind ? LegalWebApi.GetContractRelatedChildFile(this.props.id) :
-            LegalWebApi.GetContractDataFile(this.props.id);
+
+        let DocId = this.props.id;
+
+        if(this.props.isBind)
+        {
+            const childfile = await LegalWebApi.GetContractRelatedChild(this.props.id);
+            DocId = this.props.isParent ? childfile.ChildDocumentId : childfile.ParentId;
+        }
+        
+        const myrequest = LegalWebApi.GetContractDataFile(DocId);
        
         myrequest.then((contract)=>{
-            const mylist = LegalWebApi.GetContractData(contract.ChildDocumentId);
+            const mylist = LegalWebApi.GetContractData(DocId);
             mylist.then((list)=>{
                 !this.isCancelled && this.setState({
                     file:contract,
@@ -59,6 +68,11 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
         if(prevProps.id != this.props.id){
            this.refresh()
         }
+    }
+
+    static getDerivedStateFromProps(props:ContractRelatedItem.Props,state:ContractRelatedItem.State){
+        
+        return null;
     }
 
     render(){
