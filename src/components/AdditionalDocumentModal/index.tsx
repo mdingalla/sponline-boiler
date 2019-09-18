@@ -76,7 +76,12 @@ export default class AdditionalDocumentDialog extends React.Component<Additional
         className="btn btn-success">Ok</button> : null;
         return <React.Fragment>
             <Modal.Body>
-                <SearchForm OnDataLoad={this.handleSearchResult} />
+                <SearchForm OnDataLoad={this.handleSearchResult} 
+                OnDataReset={()=>{
+                    this.setState({
+                        data:[]
+                    })
+                }} />
                 <SearchModalResultPanel data={this.state.data} 
                 OnSelect={(e)=>{this.setState({
                     selected:e

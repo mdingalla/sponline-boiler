@@ -83,7 +83,7 @@ export class ContractRelatedList extends React.Component<ContractRelatedList.Pro
                             return <li className="list-group-item" key={idx}>
                                 <ContractRelatedItem key={idx} id={file.Id} isParent={file.isParent} isBind={this.props.isBind}  />
                                 <div className="row">
-                                    <div className="pull-right">
+                                    <div className="col-md-2 pull-right">
                                             <button type="button"  
                                             onClick={(e)=>{this.handleView(file.Id)}}
                                             className="btn btn-default">

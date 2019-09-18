@@ -332,7 +332,6 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 issaving:contract.issaving,
                 status:contract.status,
                 relatedDocs:contract.relateddocs,
-                
             } as ContractFormState
         }
 
@@ -409,11 +408,13 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             {...this.props}/>
 
         const allowMulti = !this.props.contract.id;
+        
+        const viewBtn = contract.contractfile &&  contract.contractfile.LinkingUri ? <a  className="btn btn-default"  target="_blank"
+        href={`${contract.contractfile.LinkingUri }`}>View</a>    : null
 
         const contractfile = this.props.contract.contractfile ? <React.Fragment>
             <h5>{contract.contractfile.Name}<span className="label label-default"></span></h5>
-            <a  className="btn btn-default"  target="_blank"
-            href={`${contract.contractfile.LinkingUri }`}>View</a>       
+               {viewBtn}
             <a  className="btn btn-default"  target="_blank"
             href={`${_spPageContextInfo.webAbsoluteUrl}/_layouts/download.aspx?SourceUrl=${contract.contractfile.ServerRelativeUrl}`}>
                 Download </a>   

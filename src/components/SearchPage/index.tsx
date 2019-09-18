@@ -93,7 +93,13 @@ SearchPage.State
     return (
         <div className="form form-horizontal">
             <h4 className="pageTitle">Advance Search</h4>
-           <SearchForm OnDataLoad={this.handleDataLoaded} />
+           <SearchForm OnDataLoad={this.handleDataLoaded} 
+           OnDataReset={()=>{
+             this.setState({
+               data:[],
+               
+             })
+           }} />
 
            <div className="row">
               {mytable}

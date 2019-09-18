@@ -29,7 +29,9 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
             contract:{
                 ContentType:{
                     Name:''
-                }
+                },
+                EffectiveDate:'',
+                ExpiryDate:''
             }
         }
     }
@@ -79,12 +81,14 @@ export class ContractRelatedItem extends React.Component<ContractRelatedItem.Pro
 
     render(){
         return <div>
+        <h4>
+            <label className="label label-primary">{this.state.contract.ContentType.Name}</label>
+            <label className="label label-info">{this.state.file.Name}</label>
+        </h4>
         <h5>
-        <label className="label label-default">{this.state.file.Name}
-         {/* {this.props.id} */}
-        </label>
-
-        <label className="label label-info">{this.state.contract.ContentType.Name}</label>
+        <label className="label label-default">Effective Date:</label><label className="label label-success">{new Date(this.state.contract.EffectiveDate).format("dd/MM/yyyy")}</label>
+         
+        <label className="label label-default">Expiry Date:</label><label className="label label-danger">{new Date(this.state.contract.ExpiryDate).format("dd/MM/yyyy")}</label>
         </h5>
 
 

@@ -49,7 +49,7 @@ class ContractContentTypesDropdown extends React.Component<ContractContentTypesD
          
         
           let ct = myWeb.lists.getByTitle('Contracts')
-          .contentTypes.get();
+          .contentTypes.filter(`Name ne 'Document' and Name ne 'Folder' and Name ne 'Document Set'`).get();
           
           ct.then((data)=>{
             //   console.log(data)

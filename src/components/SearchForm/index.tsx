@@ -33,6 +33,7 @@ import CounterPartySearch from "../CounterPartyControl/search";
 export namespace SearchForm {
   export interface Props {
     OnDataLoad:(e:ListDataAsStreamResult)=>void;
+    OnDataReset?:()=>void;
     
   }
   export interface State {
@@ -144,7 +145,7 @@ SearchForm.State
 
     LegalWebApi.QueryContract(
         {
-            ViewXml:`<View>
+            ViewXml:`<View Scope=\"RecursiveAll\">
                 <Query>
                     ${query}
                 </Query>
@@ -284,6 +285,25 @@ SearchForm.State
                     <button type="button" 
                     onClick={this.handleSearch}
                     className="btn btn-primary">Search</button>
+
+                    <button type="button"
+                    onClick={()=>{
+                        this.setState({
+                            classification:EmptyReactSelectValue,
+                            category:EmptyReactSelectValue,
+                            contentTypes:EmptyReactSelectValue,
+                            department:EmptyReactSelectValue,
+                            owner:[],
+                            counterparty:null,
+                            entity:EmptyReactSelectValue,
+                            showModal:false,
+                            selectedCounterPartyId:null,
+                            result:[]
+                        },()=>{
+                            this.props.OnDataReset();
+                        })
+                    }}
+                    className="btn btn-danger">Reset</button>
                 </div>
             </div>
         </div>
