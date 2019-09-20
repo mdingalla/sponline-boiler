@@ -82,7 +82,12 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                     description:'items',
                     type:'array',
                     minItems:payload.id ? 0 : 1
-                }
+                },
+                owner:{
+                    description: "Owner",
+                    type: "array",
+                    minItems: 1
+                  },
             }
         })
 
@@ -135,7 +140,7 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                                 .then(async (spFile)=>{
                                  ParentId = spFile["ID"];
     
-                                await spFile.update({
+                               return  await spFile.update({
                                     ContentTypeId:payload.contentTypes.value,
                                     // EntityId:payload.entity.value,
                                     IPXEntityId:payload.entity.value,
@@ -148,15 +153,24 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                                     ContractClassificationId:spClassification.Id,
                                     EffectiveDate:payload.effectiveDate ? moment(payload.effectiveDate).toISOString() : null,
                                     ExpiryDate:payload.expiryDate ? moment(payload.expiryDate).toISOString() : null,
+                                }).then((item)=>{
+                                    
+                                    // console.log(item)
+                                    ParentId = item.item["Id"]
+                                     Promise.all(
+                                        [AddOrUpdateCounterParties(ParentId,CounterParties)]
+                                    )
+    
+                                     AddRelatedDocuments(ParentId,payload.upDocs)
                                 })
     
-                                await Promise.all(
-                                    [AddOrUpdateCounterParties(ParentId,CounterParties)]
-                                )
+                                // await Promise.all(
+                                //     [AddOrUpdateCounterParties(ParentId,CounterParties)]
+                                // )
 
-                                await AddRelatedDocuments(ParentId,payload.upDocs)
+                                // await AddRelatedDocuments(ParentId,payload.upDocs)
                                 
-                                return Promise.resolve();
+                                // return Promise.resolve();
                             })
                         })
                     }

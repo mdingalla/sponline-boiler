@@ -348,7 +348,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
         const primaryParty = this.state.counterparties && this.state.counterparties.length > 0 ? this.state.counterparties[0] : null;
 
-        const primaryCounterParty =  <div className="form-group">
+        const primaryCounterParty = primaryParty ? <div className="form-group">
             <CounterPartyControl 
             onDelete={()=>{}}
             id={0}
@@ -358,7 +358,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             selectedBusinessType={primaryParty.Nature}
             onChange={this.handleCounterPartyChanges}
             classification={this.state.classification.value} />
-        </div>
+        </div> : null
 
         const durationPanel =  <React.Fragment>
                         <label className="col-md-2 control-label">Set Duration if Expiry Date is blank</label>
