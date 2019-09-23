@@ -10,8 +10,8 @@ import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
-import { EmptyReactSelectValue, DayPickerStrings, pagePath } from "../../constants/config";
-import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState, CounterPartyControlState } from "../../../types/models";
+import { EmptyReactSelectValue, DayPickerStrings, pagePath, OwnerGroup } from "../../constants/config";
+import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState, CounterPartyControlState, AppProfile } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
 import DepartmentTermStoreDropdown from "../DepartmentTermStoreDropdown";
@@ -33,6 +33,7 @@ import ContractItem from "../ContractItem";
 import * as _ from "lodash";
 import { ContractRelatedList } from "../ContractItem/list";
 import contract from "../../reducers/contract";
+import LegalWebApi from "../../api/LegalWebApi";
 
 interface ModalReloadProps {
     showModal: boolean;
@@ -97,6 +98,7 @@ export namespace ContractForm {
         appconfig: AppConfig;
         contract: ContractFormView;
         contractactions: typeof ContractActions;
+        profile:AppProfile;
     }
 
     
@@ -175,7 +177,18 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     }
 
 
-    handleModalOk(e) {
+    async handleModalOk(e) {
+
+        let nature = '';
+        let busType ={
+            BusinessType:''
+        };
+
+        if(e && e.value && !isNaN(e.value))
+        {
+             busType = await LegalWebApi.GetCounterPartyMaster(e.value)
+            nature = busType.BusinessType;
+        }
     
         !this.isCancelled &&
             this.setState(
@@ -183,7 +196,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 counterparties:this.state.counterparties.concat([
                     {
                         Classification:e.classification,
-                        Nature:'',
+                        Nature:e.classification == nature,
                         PartyName:e.value,
 
                     }
@@ -342,7 +355,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
 
     render(){
 
-        const {contract} = this.props;
+        const {contract,profile} = this.props;
+
+        const isAdmin = profile.User.Groups.results.filter(x=>x.Title == OwnerGroup).length > 0;
 
         const spModalDialog = this.state.issaving ? <SharePointModalDialog message={"Saving..."} /> : null;
 
@@ -351,6 +366,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         const primaryCounterParty = primaryParty ? <div className="form-group">
             <CounterPartyControl 
             onDelete={()=>{}}
+            isAdmin={isAdmin}
             id={0}
             showDelete={false}
             spId={primaryParty.Id}
@@ -483,6 +499,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                         this.state.counterparties.slice(1).map((cp,idx)=>{
                             return <div className="form-group" key={idx}>
                             <CounterPartyControl key={`ccp${idx}`}
+                            isAdmin={isAdmin}
                              onDelete={this.handleCounterPartyDelete}
                              id={this.state.counterparties.indexOf(cp)}
                              spId={cp.Id}

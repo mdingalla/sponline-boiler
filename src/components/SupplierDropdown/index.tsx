@@ -59,8 +59,7 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-          let filter = input && input.length > 0 ? `Title eq '${input}' 
-          or substringof('${input}',Title)` : "";
+          let filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
             
 
             LegalWebApi.GetVendors(filter)
@@ -116,12 +115,12 @@ class SupplierDropdown extends React.Component<SupplierDropdown.Props,SupplierDr
 
     render(){
         return (
-            <AsyncCreatable name="form-field-name"
+            <Async name="form-field-name"
         value={this.state.value}
         onChange={e => this.selectChange(e)}
         autoload={true}
         loadOptions={this.getOptions}
-        allowCreate={true}
+        // allowCreate={true}
         ignoreCase={true}
         ref="selSupplierDropdown" />
         )

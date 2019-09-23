@@ -78,8 +78,7 @@ class EntityDropdown extends React.Component<EntityDropdown.Props,EntityDropdown
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
-          let filter = input && input.length > 0 ? `Title eq '${input}' 
-          or substringof('${input}',Title)` : "";
+          let filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
             
 
             LegalWebApi.GetIPXEntities(filter)

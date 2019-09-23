@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux';
 // import todos from './todos';
-// import profile from './profile';
+import profile from './profile';
 
 // import dashboard from  './dashboard';
 // import locale from './locale';
@@ -9,14 +9,14 @@ import contract from './contract';
 import {routerReducer, RouterState} from 'react-router-redux';
 // import { CERRecord, TodoStoreState, AppProfile, DashboardModel, PettyCashView, LocalizedData, AppConfig } from '../../types/models';
 import appconfig from './appconfig';
-import { AppConfig, ContractFormView } from '../../types/models';
+import { AppConfig, ContractFormView, AppProfile } from '../../types/models';
 
 
 
 export {RootState,RouterState}
 
 interface RootState {
-//   profile:AppProfile;
+  profile:AppProfile;
 //   dashboard:DashboardModel;
 //   ptc:PettyCashView;
 //   locale:LocalizedData;
@@ -26,7 +26,7 @@ interface RootState {
 
 
 export const rootReducer: Reducer<RootState> = combineReducers<RootState>({
-//   profile:profile,
+  profile:profile,
 //   dashboard:dashboard,
 //   ptc:ptc,
 //   locale:locale,

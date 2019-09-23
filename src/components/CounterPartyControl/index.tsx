@@ -3,8 +3,10 @@ import SupplierDropdown from '../SupplierDropdown';
 import EntityDropdown from '../EntityDropdown';
 import CustomerDropdown from '../CustomerDropdown';
 import { ReactSelectValue, CounterParty, ContractClassification, CounterPartyControlState } from '../../../types/models';
-import { EmptyReactSelectValue, Vendor, Others } from '../../constants/config';
+import { EmptyReactSelectValue, Vendor, Others, Entity } from '../../constants/config';
 import SupplierClassificationDropdown from '../SupplierDropdown/classification';
+import { CounterPartyAddDialog } from './adddialog';
+import LegalWebApi from '../../api/LegalWebApi';
 
 export namespace CounterPartyControl {
     export interface Props {
@@ -16,12 +18,17 @@ export namespace CounterPartyControl {
         id:number;
         spId?:number;
         onDelete:(e:CounterPartyControlState)=>void;
+        isAdmin?:boolean;
+    }
+
+    export interface State extends CounterPartyControlState {
+        showAdd:boolean;
     }
 
     
 }
 
-export default class CounterPartyControl extends React.Component<CounterPartyControl.Props,CounterPartyControlState>{
+export default class CounterPartyControl extends React.Component<CounterPartyControl.Props,CounterPartyControl.State>{
     constructor(props){
         super(props);
 
@@ -29,12 +36,14 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
             selectedBusinessType:this.props.selectedBusinessType,
             selectedValue:this.props.selectedValue,
             id:this.props.id,
-            spId:this.props.spId
+            spId:this.props.spId,
+            showAdd:false
             // selectedValue: !this.props.classification || this.props.classification == Others ?  "" : EmptyReactSelectValue
         }
 
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handlebusinessType = this.handlebusinessType.bind(this);
+        this.handleOnAdd = this.handleOnAdd.bind(this);
     }
 
     // static getDerivedStateFromProps(props:CounterPartyControl.Props,state:CounterPartyControlState){
@@ -82,11 +91,47 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
        
     }
 
+    handleOnAdd(e){
+        if(e)
+        {
+            // console.log(e);
+            LegalWebApi.GetCounterPartyMaster(e)
+                .then((cpm)=>{
+                    this.setState({
+                        selectedBusinessType:this.props.classification == Vendor ? {
+                            value:cpm.BusinessType,
+                            label:cpm.BusinessType
+                        } : cpm.BusinessType,
+                        selectedValue:{
+                            value:cpm.Id,
+                            label:cpm.Title
+                        },
+                        showAdd:false
+                    },()=>{
+                        this.props.onChange(this.state)
+                    })
+                })
+           
+        }
+        else
+        {
+            this.setState({
+                showAdd:false
+            })
+        }
+        
+    }
+
 
     render(){
 
+        const addBtn = this.props.isAdmin &&
+      this.props.classification &&  this.props.classification != Others && this.props.classification != Entity ? <a onClick={()=>this.setState({
+            showAdd:true
+        })}><span className="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a> : null;
+
         let counterParty = <React.Fragment>
-        <label className="col-md-2 control-label">Others</label>
+        <label className="col-md-2 control-label">Others {addBtn}</label>
         <div className="col-md-4">
             <input className="form-control"
                 onChange={(e)=>{this.handleOnChange(e.currentTarget.value)}}
@@ -99,10 +144,13 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
         value={this.state.selectedBusinessType}
         className="form-control"/>;
 
+        
+
+
         switch (this.props.classification) {
             case "Customer":
                 counterParty =  <React.Fragment>
-                    <label className="col-md-2 control-label">Customers</label>
+                    <label className="col-md-2 control-label">Customers {addBtn}</label>
                     <div className="col-md-4">
                     <CustomerDropdown onChange={this.handleOnChange}
                     value={this.state.selectedValue}  />
@@ -112,7 +160,7 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
             
             case "Entity":
                 counterParty =  <React.Fragment>
-                    <label className="col-md-2 control-label">Interplex</label>
+                    <label className="col-md-2 control-label">Interplex {addBtn}</label>
                     <div className="col-md-4">
                     <EntityDropdown onChange={this.handleOnChange}
                     value={this.state.selectedValue} />
@@ -121,7 +169,7 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
                 break;
             case "Vendor":
                  counterParty = <React.Fragment>
-                        <label className="col-md-2 control-label">Supplier</label>
+                        <label className="col-md-2 control-label">Supplier {addBtn}</label>
                         <div className="col-md-4">
                         <SupplierDropdown onChange={this.handleOnChange}
                         value={this.state.selectedValue}  />
@@ -158,6 +206,12 @@ export default class CounterPartyControl extends React.Component<CounterPartyCon
 
         
         return <React.Fragment>
+            <CounterPartyAddDialog showModal={this.state.showAdd} 
+            classification={this.props.classification}
+            OnSelect={this.handleOnAdd}
+             OnClose={()=>{this.setState({
+                 showAdd:false
+             })}} />
             {counterParty}
             {businessType}
         </React.Fragment>

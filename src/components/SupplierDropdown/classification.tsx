@@ -107,12 +107,12 @@ class SupplierClassificationDropdown extends React.Component<SupplierClassificat
 
     render(){
         return (
-            <AsyncCreatable name="form-field-name"
+            <Async name="form-field-name"
         value={this.state.value}
         onChange={e => this.selectChange(e)}
         autoload={true}
         loadOptions={this.getOptions}
-        allowCreate={true}
+        // allowCreate={true}
         ignoreCase={true}
         ref="selSupplierClassifiationDropdown" />
         )

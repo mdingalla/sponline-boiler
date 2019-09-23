@@ -4,10 +4,11 @@ import  {Select,Async,Creatable,AsyncCreatable}  from 'react-select/lib';
 import 'react-select/dist/react-select.css';
 import { sp,Web } from "@pnp/sp";
 import { SPOnPremise } from '../../constants/config';
+import * as _ from 'lodash';
 import LegalWebApi from '../../api/LegalWebApi';
 
 
-export namespace CustomerDropdown {
+export namespace ParentCounterPartyDropdown {
     export interface Props {
         value:any;
         onChange:(e)=>void;
@@ -18,7 +19,7 @@ export namespace CustomerDropdown {
     }
 }
 
-class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDropdown.State> {
+class ParentCounterPartyDropdown extends React.Component<ParentCounterPartyDropdown.Props,ParentCounterPartyDropdown.State> {
     constructor(props){
         super(props);
 
@@ -31,48 +32,15 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
 
     }
 
-    
 
-    // getOptions(input, callback) {
-    //     let pvalue = this.props.value;
-    //     setTimeout(function() {
-        
-    //       const filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
-            
-
-    //         fetch(`${SPOnPremise}/customer/_api/web/lists/getbytitle('EndCustomers')/items?$filter=${filter}`,{
-    //             credentials: 'include',
-    //             method: 'GET',
-    //             cache: 'no-cache',
-    //             mode: 'cors',
-    //             headers: {
-    //                 Accept: 'application/json;odata=verbose',
-    //                 // 'Content-Type': 'application/json', // will fail if provided
-    //                 // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
-    //             }
-    //         })
-    //         .then(r => r.json())
-    //         .then((data)=>{
-    //             let results = data.d.results.map((item)=>{
-    //                 return { value: item.Title, label:`${item.Title}`}
-    //               });
-    //               callback(null, {
-    //                   options: results,
-    //                   complete: true,
-    //               });
-    //         })
-
-
-    //     }, 500);
-    // };
-
+   
     getOptions(input, callback) {
         let pvalue = this.props.value;
         setTimeout(function() {
           let filter = input && input.length > 0 ? `Title eq '${input}' or substringof('${input}',Title)` : "";
             
 
-            LegalWebApi.GetCustomers(filter)
+            LegalWebApi.GetParentConterParty(filter)
             .then((data)=>{
 
                 let entities:any[] = data.map((i)=>{
@@ -96,7 +64,7 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
 
         }, 500);
     };
-    
+
     selectChange(e){
         // console.log('Customer Select selectChange' + JSON.stringify(e))
         //
@@ -105,7 +73,7 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
         },()=>{  this.props.onChange(e); })
     }
 
-    componentWillReceiveProps(nextProps:CustomerDropdown.Props){
+    componentWillReceiveProps(nextProps:ParentCounterPartyDropdown.Props){
         if(nextProps != this.props)
         {
             this.setState({
@@ -116,16 +84,15 @@ class CustomerDropdown extends React.Component<CustomerDropdown.Props,CustomerDr
 
     render(){
         return (
-            <Async name="form-field-name"
+            <AsyncCreatable name="form-field-name"
         value={this.state.value}
         onChange={e => this.selectChange(e)}
         autoload={true}
         loadOptions={this.getOptions}
-        // allowCreate={true}
         ignoreCase={true}
-        ref="selCustomerDropdown" />
+        ref="selParentCP" />
         )
     }
 }
 
-export default CustomerDropdown;
+export default ParentCounterPartyDropdown;

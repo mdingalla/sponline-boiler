@@ -19,6 +19,7 @@ const CONTRACTDOCUMENT = "Documents"
 const CONTRACTCOUNTERPARTIES = "ContractCounterParties";
 const COUNTERPARTYMASTER = "CounterPartyMaster";
 const CONTRACTRELATEDDOCUMENTS = "ContractRelatedDocuments";
+const PARENTCOUNTERPARTYMASTER = "ParentCounterPartyMaster";
 
 const myWeb = sp.web;
 
@@ -30,6 +31,16 @@ class LegalWebApi {
          ParentId:parentid,
          ChildDocumentId:id
       })
+  }
+
+  static AddCounterPartyParent(payload){
+    return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
+      .items.add(payload)
+  }
+
+  static AddCounterParty(payload){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.add(payload)
   }
 
   static GetContractData(id){
@@ -128,19 +139,24 @@ class LegalWebApi {
     }
   }
 
+  static GetParentConterParty(filter){
+    return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
+      .items.filter(filter).get()
+  }
+
   static GetIPXEntities(filter){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 3 ${filter ? `and ${filter}`:""}` ).get()
+      .items.filter(`ClassificationId eq 3 ${filter ? ` and (${filter})`:""}` ).get()
   }
 
   static GetCustomers(filter){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 1 ${filter ? `and ${filter}`:""}` ).get()
+      .items.filter(`ClassificationId eq 1 ${filter ? ` and (${filter})`:""}` ).get()
   }
 
   static GetVendors(filter){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 2 ${filter ? `and ${filter}`:""}` ).get()
+      .items.filter(`ClassificationId eq 2 ${filter ? ` and (${filter})`:""}` ).get()
   }
 
 
@@ -174,6 +190,11 @@ class LegalWebApi {
   static GetContentType(id){
     return myWeb.lists.getByTitle(CONTRACTS).contentTypes
     .getById(id).get();
+  }
+
+  static GetCounterPartyMaster(id){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.getById(id).get();
   }
 
   static GetCounterPartiesByParentId(id){

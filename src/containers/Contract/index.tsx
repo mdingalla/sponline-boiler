@@ -6,7 +6,7 @@ import { RootState } from "../../reducers";
 
 import * as ContractActions from "../../actions/contract";
 import ContractForm from "../../components/ContractForm";
-import { AppConfig, ContractFormView } from "../../../types/models";
+import { AppConfig, ContractFormView, AppProfile } from "../../../types/models";
 
 export namespace Contract {
   export interface Props extends RouteComponentProps<void> {
@@ -15,7 +15,7 @@ export namespace Contract {
     // dashboardactions: typeof DashboardActions;
     contractactions: typeof ContractActions;
     // dashboard: DashboardModel;
-    // profile: AppProfile;
+    profile: AppProfile;
     // locale: LocalizedData;
   }
 
@@ -71,7 +71,7 @@ class Contract extends React.Component<Contract.Props, Contract.State> {
 function mapStateToProps(state: RootState) {
   return {
     // dashboard: state.dashboard,
-    // profile: state.profile,
+    profile: state.profile,
     // locale: state.locale,
     appconfig: state.appconfig,
     contract:state.contract

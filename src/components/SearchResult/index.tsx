@@ -6,6 +6,7 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { BootstrapTableOptions, pagePath, editPagePath } from '../../constants/config';
 import { ListDataAsStreamResult } from '../../../types/models';
 import * as ContractActions from "../../actions/contract";
+import CounterPartyLabel from '../CounterPartyControl/label';
 
 export namespace SearchResultPanel {
     export interface Props {
@@ -24,6 +25,16 @@ const columns = (props:SearchResultPanel.Props)=>  [
     {
         dataField:'IPXEntityName',
         text:'Entity'
+    },
+    {
+        dataField:'ccp',
+        text:'CounterParty',
+        isDummyField: true,
+        formatter:(cellContent,row) => {
+            return (<div>
+                <CounterPartyLabel contractId={row.Id} />
+            </div>)
+        }
     },
     {
         dataField:'Classification',

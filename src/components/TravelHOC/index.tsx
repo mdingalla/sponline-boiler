@@ -3,14 +3,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { RootState } from '../../reducers';
-// import * as ProfileActions from '../../actions/profile';
+import * as ProfileActions from '../../actions/profile';
 import { bindActionCreators } from 'redux';
 
 
 
 export namespace TravelWrapper {
     export interface Props extends RouteComponentProps<void>{
-        // profileactions:typeof ProfileActions
+        profileactions:typeof ProfileActions
     }
 
     export interface State {
@@ -26,8 +26,8 @@ function travelWrapper(WrappedComponent) {
             {
                 //  console.log('BaseComponent cpdm');
 
-                // this.props.profileactions.getStaffMaster(_spPageContextInfo.userId);
-                // this.props.profileactions.getAppConfig(_spPageContextInfo.userId);
+                this.props.profileactions.GetUser(_spPageContextInfo.userId);
+                this.props.profileactions.getAppConfig(_spPageContextInfo.userId);
 
             }
 
@@ -54,7 +54,7 @@ function mapStateToProps(state: RootState) {
   
   function mapDispatchToProps(dispatch) {
     return {
-    //   profileactions: bindActionCreators(ProfileActions as any, dispatch)
+      profileactions: bindActionCreators(ProfileActions as any, dispatch)
     };
   }
 

@@ -7,6 +7,8 @@ export const homePagePath = `${_spPageContextInfo.webServerRelativeUrl}/SitePage
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 
+export const OwnerGroup =  "Legal Repository Owners";
+
 export const uploadPagePath = `${pagePath}/new`
 export const searchPagePath = `${pagePath}/search`;
 export const editPagePath = `${pagePath}/edit/`;
