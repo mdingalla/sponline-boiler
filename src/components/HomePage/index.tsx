@@ -4,6 +4,7 @@ import { AppConfig, ContractFormView } from "../../../types/models"
 
 import * as ContractActions from "../../actions/contract";
 
+
 export namespace HomePage {
     export interface Props extends RouteComponentProps<void> {
       appconfig: AppConfig;

@@ -15,7 +15,7 @@ import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import HomeLayout from "./containers/Layout/home";
 
 
-
+import "!style-loader!css-loader!./home.css";
 
 const history = createBrowserHistory();
 const store = configureStore();
@@ -37,10 +37,16 @@ setTimeout(() => {
     document.getElementById("homeroot")
   );
 
+  ReactDOM.render(
+      <h4 className="page-header">Legal Repository</h4>
+    ,document.getElementById('DeltaTopNavigation')
+  )
+
 
   ReactDOM.render(
-    <div>
-      <h4 className="page-header">Legal Repository</h4>
-    </div>
+    null
+    // <div>
+    //   <h4 className="page-header">Legal Repository</h4>
+    // </div>
   ,document.getElementById('pageTitle'))
 }, 500);

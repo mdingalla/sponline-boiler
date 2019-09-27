@@ -88,7 +88,13 @@ SearchPage.State
   
   render() {
 
-    const mytable = this.state.data.length > 0 ? <SearchResultPanel data={this.state.data} {...this.props} /> : null
+    const zeroResult = this.state.result ? <div className="col-md-12">
+    <div className="alert alert-danger" role="alert"> 
+  <strong>0 search results</strong> Change a few things up and try searching again. </div>
+  </div> : null;
+
+
+    const mytable = this.state.data.length > 0 ? <SearchResultPanel data={this.state.data} {...this.props} /> : zeroResult;
 
     return (
         <div className="form form-horizontal">
@@ -97,7 +103,7 @@ SearchPage.State
            OnDataReset={()=>{
              this.setState({
                data:[],
-               
+               result:null
              })
            }} />
 

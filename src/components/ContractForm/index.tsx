@@ -34,6 +34,7 @@ import * as _ from "lodash";
 import { ContractRelatedList } from "../ContractItem/list";
 import contract from "../../reducers/contract";
 import LegalWebApi from "../../api/LegalWebApi";
+import ErrorPanel from "../ErrorPanel";
 
 interface ModalReloadProps {
     showModal: boolean;
@@ -101,10 +102,14 @@ export namespace ContractForm {
         profile:AppProfile;
     }
 
+    export interface State extends ContractFormState {
+        errors?:any[]
+    }
+
     
 }
 
-export default class ContractForm extends React.Component<ContractForm.Props,ContractFormState> {
+export default class ContractForm extends React.Component<ContractForm.Props,ContractForm.State> {
     isCancelled: any;
     constructor(props){
         super(props);
@@ -137,7 +142,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
             upDocs:[],
             relatedDocs:contract.relateddocs,
             issaving:contract.issaving,
-            status:contract.status
+            status:contract.status,
+            errors:contract.validationResult.errors
         }
     }
 
@@ -252,6 +258,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     handleUPFiles(files) {
         this.setState({
             upFiles:files
+        },()=>{
+            this.props.contractactions.ValidateContractState(this.state)
         })
     }
 
@@ -301,7 +309,7 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
     }
 
 
-    static getDerivedStateFromProps(props:ContractForm.Props,state:ContractFormState){
+    static getDerivedStateFromProps(props:ContractForm.Props,state:ContractForm.State){
         const {contract} = props;
         if(props.contract.status == "SAVED" && state.status != props.contract.status)
         {
@@ -322,13 +330,21 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         if(props.contract.issaving != state.issaving){
             return {
                 issaving:props.contract.issaving
-            } as ContractFormState
+            } as ContractForm.State
         }
         if(props.contract.relateddocs.length != state.relatedDocs.length){
             return {
                  relatedDocs:contract.relateddocs
-            } as ContractFormState
+            } as ContractForm.State
         }
+
+        if(props.contract.validationResult.errors != state.errors)
+        {
+            return {
+                errors:props.contract.validationResult.errors
+            } as ContractForm.State
+        }
+
         if(props.contract.id && props.contract.id != state.id){
            
             return {
@@ -345,7 +361,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 issaving:contract.issaving,
                 status:contract.status,
                 relatedDocs:contract.relateddocs,
-            } as ContractFormState
+                errors:contract.validationResult.errors
+            } as ContractForm.State
         }
 
         
@@ -438,6 +455,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
         </React.Fragment> : null;
 
         return <div className="row">
+            <ErrorPanel errors={this.state.errors} />
+
             <h4 className="pageTitle">Contract Meta Data</h4>
             <div className="col-md-12">
                 <div className="form form-horizontal">
@@ -448,7 +467,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                             <ContractContentTypesDropdown 
                             onChange={(e)=>{
                                 this.setState({
-                                    contentTypes:e || EmptyReactSelectValue
+                                    contentTypes:e || EmptyReactSelectValue,
+                                },()=>{
+                                    this.props.contractactions.ValidateContractState(this.state)
                                 })
                             }} 
                             value={this.state.contentTypes}/>
@@ -459,7 +480,9 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                          <EntityDropdown onChange={(e)=>{
                              this.setState({
                                  entity:e || EmptyReactSelectValue
-                             })
+                                },()=>{
+                                    this.props.contractactions.ValidateContractState(this.state)
+                                })
                          }} value={this.state.entity}  />
                         </div>
                     </div>
@@ -472,6 +495,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                             this.setState({
                                 classification:e || EmptyReactSelectValue,
                                 
+                            },()=>{
+                                this.props.contractactions.ValidateContractState(this.state)
                             })
                         }} value={this.state.classification}  />
                         </div>
@@ -544,6 +569,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                             onChange={(e)=>{
                                 this.setState({
                                     category:e || EmptyReactSelectValue
+                                },()=>{
+                                    this.props.contractactions.ValidateContractState(this.state)
                                 })
                             }} value={this.state.category}  />
                         </div>
@@ -554,6 +581,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                             onChange={(e)=>{
                                 this.setState({
                                     department:e || EmptyReactSelectValue
+                                },()=>{
+                                    this.props.contractactions.ValidateContractState(this.state)
                                 })
                             }} />
                             </div>
@@ -569,6 +598,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                                 onChange={e => {
                                     this.setState({
                                         owner:e || []
+                                    },()=>{
+                                        this.props.contractactions.ValidateContractState(this.state)
                                     })
                                 }}
                             />

@@ -16,6 +16,91 @@ export const ContractFormChanges = createAction<Partial<ContractFormView>>(
     Actions.CONTRACT_CHANGED
 );
 
+export function ValidateContractFormState(payload:ContractFormState){
+    const isValid: { valid: boolean; errors: any[] }  = revalidator.validate(payload,{
+        properties:{
+            entity:{
+                properties:{
+                    label:{
+                        description:'Entity',
+                        type:'string',
+                        allowEmpty:false,
+                        message:'Contracting Entity is required'
+                    }
+                },
+                
+            },
+            contentTypes:{
+                properties:{
+                    label:{
+                        description:'Contract Types',
+                        type:'string',
+                        allowEmpty:false,
+                        message:'Contract Types is required'
+                    }
+                },
+                
+            },
+            classification:{
+                properties:{
+                    label:{
+                        description:'Relationship',
+                        type:'string',
+                        allowEmpty:false,
+                        message:'Relationship is required'
+                    }
+                },
+               
+            },
+            category:{
+                properties:{
+                    label:{
+                        description:'Category',
+                        type:'string',
+                        allowEmpty:false,
+                        message:'Category is required'
+                    }
+                },
+                
+            },
+            department:{
+                properties:{
+                    label:{
+                        description:'Function',
+                        type:'string',
+                        allowEmpty:false,
+                        message:'Function is required'
+                    }
+                },
+               
+            },
+            upFiles:{
+                description:'items',
+                type:'array',
+                minItems:payload.id ? 0 : 1,
+                message:'Uploaded File is required'
+            },
+            owner:{
+                description: "Owner",
+                type: "array",
+                minItems: 1,
+                message:'Contract Owner is required'
+              },
+        }
+    })
+
+    return isValid;
+}
+
+export function ValidateContractState(payload:ContractFormState){
+    return function(dispatch){
+        const isValid = ValidateContractFormState(payload);
+        dispatch(ContractFormChanges({
+            validationResult:isValid
+        }))
+    }
+}
+
 export function CreateOrUpdateContract(payload:ContractFormState,history:H.History){
     return function(dispatch,getState:()=>RootState){
 
@@ -28,70 +113,15 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
             } as CounterParty
         })
 
-        // console.log(payload)
-        // console.log(CounterParties);
+        
+        const isValid = ValidateContractFormState(payload);
 
-        const isValid: { valid: boolean; errors: any[] }  = revalidator.validate(payload,{
-            properties:{
-                entity:{
-                    properties:{
-                        label:{
-                            description:'Entity',
-                            type:'string',
-                            allowEmpty:false
-                        }
-                    }
-                },
-                contentTypes:{
-                    properties:{
-                        label:{
-                            description:'Contract Types',
-                            type:'string',
-                            allowEmpty:false
-                        }
-                    }
-                },
-                classification:{
-                    properties:{
-                        label:{
-                            description:'Relationship',
-                            type:'string',
-                            allowEmpty:false
-                        }
-                    }
-                },
-                category:{
-                    properties:{
-                        label:{
-                            description:'Category',
-                            type:'string',
-                            allowEmpty:false
-                        }
-                    }
-                },
-                department:{
-                    properties:{
-                        label:{
-                            description:'Function',
-                            type:'string',
-                            allowEmpty:false
-                        }
-                    }
-                },
-                upFiles:{
-                    description:'items',
-                    type:'array',
-                    minItems:payload.id ? 0 : 1
-                },
-                owner:{
-                    description: "Owner",
-                    type: "array",
-                    minItems: 1
-                  },
-            }
-        })
-
-        if(!isValid.valid) return;
+        if(!isValid.valid){
+            dispatch(ContractFormChanges({
+                validationResult:isValid
+            }))
+            return;
+        }
 
 
         dispatch(ContractFormChanges({
@@ -420,7 +450,7 @@ export function NavigateContractPage(id){
 }
 
 export function NavigateHome(){
-    window.location.href = pagePath;
+    window.location.href = homePagePath;
 }
 
 export function NavigateNewContract(){
@@ -439,3 +469,6 @@ export function NewContract(){
         }))
     }
 }
+
+
+

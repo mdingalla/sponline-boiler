@@ -16,13 +16,17 @@ import {
   DatePicker
 } from 'office-ui-fabric-react';
 
-import { AppConfig } from "../../../types/models";
+import { AppConfig, ContractFormView } from "../../../types/models";
 import { DayPickerStrings } from "../../constants/config";
+import { HomePage } from "../HomePage";
+import * as ContractActions from "../../actions/contract";
 
 
-export namespace HomePage {
+export namespace Home {
   export interface Props extends RouteComponentProps<void> {
     appconfig: AppConfig;
+    contractactions: typeof ContractActions;
+    contract: ContractFormView;
     // dashboardactions: typeof DashboardActions;
     // dashboard: DashboardModel;
     // profile: AppProfile;
@@ -31,9 +35,9 @@ export namespace HomePage {
   export interface State {}
 }
 
-class HomePage extends React.Component<
-HomePage.Props,
-HomePage.State
+class Home extends React.Component<
+Home.Props,
+Home.State
 > {
   constructor(props) {
     super(props);
@@ -50,7 +54,8 @@ HomePage.State
 
     return (
       <div className="">
-          <Stack horizontal horizontalAlign="space-evenly" tokens={sectionStackTokens} >
+        <HomePage {...this.props} />
+          {/* <Stack horizontal horizontalAlign="space-evenly" tokens={sectionStackTokens} >
             <Card>
               <Card.Item>
               <DatePicker strings={DayPickerStrings} 
@@ -73,11 +78,11 @@ HomePage.State
             </Card>
 
 
-          </Stack>
+          </Stack> */}
       
       </div>
     );
   }
 }
 
-export default HomePage;
+export default Home;

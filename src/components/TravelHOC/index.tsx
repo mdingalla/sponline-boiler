@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { RootState } from '../../reducers';
 import * as ProfileActions from '../../actions/profile';
 import { bindActionCreators } from 'redux';
+import LegalWebApi from '../../api/LegalWebApi';
 
 
 
@@ -28,6 +29,14 @@ function travelWrapper(WrappedComponent) {
 
                 this.props.profileactions.GetUser(_spPageContextInfo.userId);
                 this.props.profileactions.getAppConfig(_spPageContextInfo.userId);
+
+                const permission = LegalWebApi.GetContractPermission();
+
+                permission.then((x)=>{
+                  console.log(x)
+                }).catch((y)=>{
+                  console.log(y)
+                })
 
             }
 

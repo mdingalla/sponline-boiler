@@ -117,7 +117,7 @@ export class CounterPartyAddDialog extends React.Component<CounterPartyAddDialog
         show={this.props.showModal}
         onHide={this.props.OnClose} >
             <Modal.Header>
-
+                <h4>Add Counter Party Master</h4>
             </Modal.Header>
             <Modal.Body className="form form-horizontal" >
             <div className="form-group">

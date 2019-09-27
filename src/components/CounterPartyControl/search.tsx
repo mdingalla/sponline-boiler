@@ -9,6 +9,7 @@ import CustomerDropdown from "../CustomerDropdown";
 export namespace CounterPartySearch {
     export interface Props {
         OnChange:(e)=>void;
+        value:any;
 
     }
 
@@ -30,6 +31,27 @@ export default class CounterPartySearch extends React.Component<CounterPartySear
             value:EmptyReactSelectValue
         }
 
+    }
+
+    static getDerivedStateFromProps(props:CounterPartySearch.Props,state:CounterPartySearch.State){
+        if(props.value == null)
+        {   
+            if(state.classification == Others)
+            {
+                return {
+                    value:""
+                } as CounterPartySearch.State
+            }
+            else
+            {
+                return {
+                    value:EmptyReactSelectValue
+                } as CounterPartySearch.State
+            }
+
+            
+        }
+        return null;
     }
 
 

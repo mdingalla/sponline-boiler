@@ -1,4 +1,4 @@
-import {sp, RenderListDataOptions, RenderListDataParameters} from '@pnp/sp'
+import {sp, RenderListDataOptions, RenderListDataParameters, ContentType} from '@pnp/sp'
 import { SPContractData, CounterParty, ReactSelectValue } from '../../types/models';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import UserApi from './userApi';
@@ -23,7 +23,131 @@ const PARENTCOUNTERPARTYMASTER = "ParentCounterPartyMaster";
 
 const myWeb = sp.web;
 
+
+
+
 class LegalWebApi {
+
+  static  AddContractContentType(name){
+    var deferred = $.Deferred();
+
+    var oSiteContentTypes:SP.ContentTypeCollection, clientContext:SP.ClientContext;
+    
+    clientContext = new SP.ClientContext();
+    var web = clientContext.get_web();
+
+    oSiteContentTypes = web.get_contentTypes();
+
+    clientContext.load(oSiteContentTypes)
+
+    clientContext.executeQueryAsync(
+      ()=>{
+            var oEnumerator = oSiteContentTypes.getEnumerator();
+    
+            var oContentType;
+
+            // Counter variable to be used to break below loop
+            var counter = 0;
+        
+            while (oEnumerator.moveNext()) {
+                // This line of codde is written to break the loop
+                if (counter == 1) {
+                    break;
+                }
+        
+                oContentType = oEnumerator.get_current();
+        
+                // Specify the Parent Content Type Name here
+                if (oContentType.get_name() == "LegalContract") {
+                    counter += 1;
+        
+                    var NewContentType = new SP.ContentTypeCreationInformation();
+        
+                    // New Content Type Name
+                    NewContentType.set_name(name);
+        
+                    NewContentType.set_parentContentType(oContentType);
+        
+                    // Group nme for the new Content Type
+                    NewContentType.set_group("Contract Content Types");
+        
+                    // Description of the content type
+                    NewContentType.set_description('A Legal Contract Type');
+        
+                    oSiteContentTypes.add(NewContentType);
+        
+                    //Load Client Context and Execute the batch
+                    clientContext.load(oSiteContentTypes);
+        
+                    return  clientContext.executeQueryAsync(FinalQuerySuccess,FinalQueryFailure);
+                  }
+            }
+          },
+          ()=>{
+            deferred.reject()
+          }
+    )
+
+    return deferred.promise();
+
+      function FinalQuerySuccess(sender, args) {
+        // console.log('success')
+        deferred.resolve(true)
+      }
+
+      function FinalQueryFailure(sender, args) {
+        // console.log('fail')
+        deferred.reject()
+        // console.log('Failed' + args.get_message() + '\n' + args.get_stackTrace());
+      }
+   
+  }
+
+  static async AddContentTypeToContract(name){
+    
+    const contentType = await myWeb.contentTypes.filter(`Name eq '${name}'`).get<ContentType[]>();
+
+    if(contentType && contentType.length > 0)
+    {
+      const ct = contentType[0];
+      
+      if(ct){
+        return myWeb.lists.getByTitle(CONTRACTS)
+          .contentTypes.addAvailableContentType(ct['StringId'])
+          
+      }
+    }
+
+    return Promise.reject();
+  }
+
+  static AddSiteContentType(name){
+
+    const payload =  {
+      '__metadata': {'type': 'SP.ContentType'},
+     'Name': `${name}`,
+     'Group': 'Custom Content Types',        
+      'Parent':{
+          '__metadata':{
+              'type':'SP.ContentTypeId'
+          },
+          'StringValue':'0x010100D7A632D0DAFA054A839055694AE108240B'
+      }
+    }
+    return fetch(`${_spPageContextInfo.webAbsoluteUrl}/_api/web/contenttypes`,{
+      method: 'POST',
+      credentials:'same-origin',
+      headers: {
+          Accept: 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose', // will fail if provided
+          "X-RequestDigest": document.getElementById('__REQUESTDIGEST').attributes['value'].value
+          // 'X-ClientService-ClientTag': 'PnPCoreJS', // will fail if provided
+      },
+      body:JSON.stringify(payload)
+    })
+  }
+
+
 
   static AddContractRelatedDocuments(parentid,id){
     return myWeb.lists.getByTitle(CONTRACTRELATEDDOCUMENTS)
@@ -41,6 +165,59 @@ class LegalWebApi {
   static AddCounterParty(payload){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.add(payload)
+  }
+
+  static async ContractCheckInOut(id,outcome:boolean){
+    //true = checkin
+    let myfile = myWeb.lists.getByTitle(CONTRACTS)
+      .items.getById(id).file;
+
+    const spFile = await myfile.get();
+    const checkOutType = spFile.CheckOutType;
+
+    if(outcome){
+      if(checkOutType == 0){
+        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkin()
+      }
+    }
+    else
+    {
+      if(checkOutType == 2){
+        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkout()
+      }
+    }
+  }
+
+
+  static async DeleteContractType(id){
+
+    const contractType = await myWeb.lists.getByTitle(CONTRACTS).contentTypes.getById(id).get<ContentType>();
+
+    
+    
+    const ListContentDelete =  myWeb.lists.getByTitle(CONTRACTS).contentTypes.getById(id).delete();
+
+    return ListContentDelete.then(async ()=>{
+
+      const siteContent = await myWeb.contentTypes.filter(`Name eq '${contractType["Name"]}'`).get();
+      
+      if(siteContent && siteContent.length > 0){
+
+        const siteCT = siteContent[0];
+
+        if(siteCT)
+        {
+          const WebContentDelete = myWeb.contentTypes.getById(siteCT.StringId)
+          .delete();
+  
+          return WebContentDelete;
+        }
+
+      }
+
+    }).catch(()=>{
+      return Promise.reject();
+    })
   }
 
   static GetContractData(id){
@@ -118,26 +295,7 @@ class LegalWebApi {
         .items.getById(id).update(payload);
   }
 
-  static async ContractCheckInOut(id,outcome:boolean){
-    //true = checkin
-    let myfile = myWeb.lists.getByTitle(CONTRACTS)
-      .items.getById(id).file;
-
-    const spFile = await myfile.get();
-    const checkOutType = spFile.CheckOutType;
-
-    if(outcome){
-      if(checkOutType == 0){
-        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkin()
-      }
-    }
-    else
-    {
-      if(checkOutType == 2){
-        return myWeb.lists.getByTitle(CONTRACTS).items.getById(id).file.checkout()
-      }
-    }
-  }
+ 
 
   static GetParentConterParty(filter){
     return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
@@ -192,6 +350,11 @@ class LegalWebApi {
     .getById(id).get();
   }
 
+  static GetContractContentTypes(){
+    return myWeb.lists.getByTitle(CONTRACTS).contentTypes
+      .get()
+  }
+
   static GetCounterPartyMaster(id){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.getById(id).get();
@@ -209,6 +372,11 @@ class LegalWebApi {
     return myWeb.lists.getByTitle(CLASSIFICATION)
       .items.filter(`KeyValue eq '${keyvalue}'`)
       .get();
+  }
+
+
+  static GetContractPermission(){
+    return myWeb.lists.getByTitle(CONTRACTS).getCurrentUserEffectivePermissions()
   }
 
   static ReplaceDoc(file:File,filePath:string){

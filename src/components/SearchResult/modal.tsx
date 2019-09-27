@@ -5,6 +5,7 @@ import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import { BootstrapTableOptions } from '../../constants/config';
 import { ListDataAsStreamResult } from '../../../types/models';
+import CounterPartyLabel from '../CounterPartyControl/label';
 
 
 const columns = [
@@ -16,6 +17,16 @@ const columns = [
         dataField:'IPXEntityName',
         text:'Entity'
     },
+    {
+      dataField:'ccp',
+      text:'CounterParty',
+      isDummyField: true,
+      formatter:(cellContent,row) => {
+          return (<div>
+              <CounterPartyLabel contractId={row.Id} />
+          </div>)
+      }
+  },
     {
         dataField:'Classification',
         text:'Classification'

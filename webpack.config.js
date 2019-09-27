@@ -218,7 +218,7 @@ module.exports = {
       // inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      chunks:["home","homevendor"],
+      chunks:["home","vendor"],
       minify:false,
       inject: 'body',
       template: './template/home.html', //if main

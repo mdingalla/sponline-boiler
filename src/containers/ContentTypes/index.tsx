@@ -1,19 +1,15 @@
 import * as React from "react";
-import { bindActionCreators, Store } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { RootState } from "../../reducers";
 
-
-
-import DashboardPage from "../../components/Dashboard";
-import { Toggle } from "office-ui-fabric-react/lib/Toggle";
+import * as ContractActions from "../../actions/contract";
 import ContractForm from "../../components/ContractForm";
 import { AppConfig, ContractFormView, AppProfile } from "../../../types/models";
-import HomePage from "../../components/Home";
-import * as ContractActions from "../../actions/contract"
+import ContentTypesPage from "../../components/ContentTypes";
 
-export namespace HomeContainer {
+export namespace ContentTypesContainer {
   export interface Props extends RouteComponentProps<void> {
     appconfig: AppConfig;
     contract: ContractFormView;
@@ -21,6 +17,7 @@ export namespace HomeContainer {
     contractactions: typeof ContractActions;
     // dashboard: DashboardModel;
     profile: AppProfile;
+    // locale: LocalizedData;
   }
 
   export interface State {
@@ -29,7 +26,7 @@ export namespace HomeContainer {
 }
 
 // @connect(mapStateToProps, mapDispatchToProps)
-class HomeContainer extends React.Component<HomeContainer.Props, HomeContainer.State> {
+class ContentTypesContainer extends React.Component<ContentTypesContainer.Props, ContentTypesContainer.State> {
   componentDidMount() {
     let titlerow = document.getElementById("titlerow");
     if (titlerow) titlerow.style.display = "none";
@@ -49,7 +46,7 @@ class HomeContainer extends React.Component<HomeContainer.Props, HomeContainer.S
     // if(sideNavBox) sideNavBox.style.display = "block";
   }
 
-  componentWillReceiveProps(nextProps: HomeContainer.Props) {
+  componentWillReceiveProps(nextProps: ContentTypesContainer.Props) {
     // if (
     //   nextProps.profile.User &&
     //   nextProps.profile.User.Title &&
@@ -63,7 +60,7 @@ class HomeContainer extends React.Component<HomeContainer.Props, HomeContainer.S
     const { children } = this.props;
     return (
       <div className="row-fluid">
-        <HomePage {...this.props}/>
+        <ContentTypesPage {...this.props}  />
         {children}
       </div>
     );
@@ -90,4 +87,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeContainer);
+)(ContentTypesContainer);

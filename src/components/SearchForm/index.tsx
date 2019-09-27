@@ -113,6 +113,7 @@ SearchForm.State
     
 
     let counterparties = [];
+    let counterpartyFilter = [];
     if(this.state.counterparty){
         let subquery = "";
         const rsCounterParty = this.state.counterparty as ReactSelectValue;
@@ -135,13 +136,36 @@ SearchForm.State
 
         if(counterparties.length > 0)
         {
-            filter.push(CamlBuilder.Expression().CounterField("ID").In(counterparties))
+            counterpartyFilter.push(CamlBuilder.Expression().CounterField("ID").In(counterparties))
         }
+       
     }
 
-    // console.log(counterparties)
+    
+    let query= '';
 
-    const query = camlquery.Where().All([contentType,entity,category,mfunction,owner].concat(filter)).ToString();
+    if(this.state.counterparty)
+    {
+
+        if(counterparties.length > 0)
+        {
+            query =  camlquery.Where().All([contentType,entity,category,mfunction,owner].concat(filter).concat(counterpartyFilter)).ToString();
+        }
+        else
+        {
+            query =  camlquery.Where().All([contentType,entity,category,mfunction,owner].concat([
+                CamlBuilder.Expression().CounterField("ID").EqualTo(0)
+            ])).ToString();
+        }
+    }
+    else
+    {
+        query =  camlquery.Where().All([contentType,entity,category,mfunction,owner].concat(filter)).ToString();
+    }
+    
+
+    
+    
 
     LegalWebApi.QueryContract(
         {
@@ -275,7 +299,7 @@ SearchForm.State
                             />
                         </div>
                         <div className="col-md-6">
-                            <CounterPartySearch OnChange={(e)=>{this.setState({
+                            <CounterPartySearch value={this.state.counterparty} OnChange={(e)=>{this.setState({
                                 counterparty:e
                             })}}  />
                         </div>
@@ -298,6 +322,10 @@ SearchForm.State
                             entity:EmptyReactSelectValue,
                             showModal:false,
                             selectedCounterPartyId:null,
+                            effectiveDateFrom:null,
+                            effectiveDateTo:null,
+                            expiryDateFrom:null,
+                            expiryDateTo:null,
                             result:[]
                         },()=>{
                             this.props.OnDataReset();

@@ -17,7 +17,11 @@ const initialState: ContractFormView = {
     relationship:EmptyReactSelectValue,
     issaving:false,
     status:"NEW",
-    relateddocs:[]
+    relateddocs:[],
+    validationResult:{
+      errors:[],
+      valid:true
+    }
 }
 
 export default handleActions<ContractFormView, any>(

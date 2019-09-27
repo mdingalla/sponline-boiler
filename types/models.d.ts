@@ -571,6 +571,7 @@ declare interface ContractFormView {
   status:"SAVED" | "NEW" | "EDIT"
   relateddocs:any[];
   contractfile?:any;
+  validationResult?:ValidationResult
 }
 
 

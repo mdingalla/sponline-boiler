@@ -21,12 +21,12 @@ export default class CounterPartyLabel extends React.Component<CounterPartyLabel
         }
     }
     
-    componentDidUpdate(){
+    componentDidMount(){
         LegalWebApi.GetCounterPartiesByParentId(this.props.contractId)
             .then((ccp)=>{
                 !this.isCancelled &&  this.setState({
-                    label:ccp.reduce((prev,curr)=>{
-                        `${prev} ${curr.Title}`
+                    label:ccp.reduce((prev,curr,idx)=>{
+                        return idx == 0 ? curr.Title : `${prev}, ${curr.Title}`
                     },'')
                 })
             })
