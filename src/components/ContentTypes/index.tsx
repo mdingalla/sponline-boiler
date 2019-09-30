@@ -25,6 +25,8 @@ export namespace ContentTypesPage {
         showModal?:boolean;
         contenttype:string;
         issaving:boolean;
+        selectedct?:string;
+        name?:string;
     }
 }
 
@@ -45,6 +47,15 @@ const columns = (props:ContentTypesPage.Props,state:ContentTypesPage.State,app:C
         isDummyField: true,
         formatter:(cellContent,row) => {
             return (<div>
+
+                <button type="button" 
+                onClick={()=>{
+                    app.handleEditModal(row.StringId)
+                }}
+                className="btn btn-primary">
+                    Edit
+                </button>
+
                 <button type="button" 
                 onClick={()=>{
                     LegalWebApi.DeleteContractType(row.StringId)
@@ -57,6 +68,8 @@ const columns = (props:ContentTypesPage.Props,state:ContentTypesPage.State,app:C
                         })
                 }}
                 className="btn btn-danger">Delete</button>
+
+               
             </div>)
         }
     },
@@ -71,6 +84,7 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleAddModal = this.handleAddModal.bind(this);
         this.handleModalSave = this.handleModalSave.bind(this);
+        this.handleEditModal = this.handleEditModal.bind(this);
 
         this.state ={
             data:[],
@@ -103,8 +117,20 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
 
     handleAddModal(){
         this.setState({
-            showModal:true
+            showModal:true,
+            selectedct:null
         })
+    }
+
+    async handleEditModal(id){
+        const ct = await LegalWebApi.GetContentType(id)
+        if(ct){
+            this.setState({
+                contenttype:ct.Name,
+                selectedct:ct.Name,
+                showModal:true
+            })
+        }
     }
 
     handleModalSave(){
@@ -114,21 +140,39 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
         this.setState({
             issaving:true
         },()=>{
-            LegalWebApi.AddContractContentType(this.state.contenttype)
-            .done((x)=>{
-                if(x){
-                    LegalWebApi.AddContentTypeToContract(this.state.contenttype)
-                    .then((x)=>{
-                        
-                        this.setState({
-                            showModal:false,
-                            issaving:false
-                        },()=>{
-                            this.refresh()
-                        })
-                    })   
-                }
-            })
+
+
+            if(this.state.selectedct){
+               Promise.all([
+                LegalWebApi.UpdateContractContentTypeById(this.state.selectedct,this.state.contenttype),
+                LegalWebApi.UpdateSiteContentType(this.state.selectedct,this.state.contenttype)
+               ]).then(()=>{
+                this.setState({
+                    showModal:false,
+                    issaving:false
+                },()=>{
+                    this.refresh()
+                })
+               })
+            }
+            else
+            {
+                LegalWebApi.AddContractContentType(this.state.contenttype)
+                .done((x)=>{
+                    if(x){
+                        LegalWebApi.AddContentTypeToContract(this.state.contenttype)
+                        .then((x)=>{
+                            
+                            this.setState({
+                                showModal:false,
+                                issaving:false
+                            },()=>{
+                                this.refresh()
+                            })
+                        })   
+                    }
+                })
+            }
         })
         
       

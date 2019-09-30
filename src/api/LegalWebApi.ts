@@ -290,10 +290,140 @@ class LegalWebApi {
 
   }
 
+  static UpdateSiteContentType(id,name,listname=CONTRACTS){
+    var deferred = $.Deferred();
+
+    var oSiteContentTypes:SP.ContentTypeCollection, clientContext:SP.ClientContext;
+    
+    clientContext = new SP.ClientContext();
+    var web = clientContext.get_web();
+    var list = web.get_lists().getByTitle(listname);
+
+
+    oSiteContentTypes = list.get_contentTypes();
+
+    clientContext.load(oSiteContentTypes)
+
+    clientContext.executeQueryAsync(
+      ()=>{
+            var oEnumerator = oSiteContentTypes.getEnumerator();
+    
+            var oContentType;
+
+            // Counter variable to be used to break below loop
+            var counter = 0;
+        
+            while (oEnumerator.moveNext()) {
+                // This line of codde is written to break the loop
+                if (counter == 1) {
+                    break;
+                }
+        
+                oContentType = oEnumerator.get_current();
+        
+                // Specify the Parent Content Type Name here
+                if (oContentType.get_name() == id) {
+                    counter += 1;
+        
+                    // New Content Type Name
+                    oContentType.set_name(name);
+                    oContentType.update();
+        
+                    //Load Client Context and Execute the batch
+                    clientContext.load(oContentType);
+        
+                    return  clientContext.executeQueryAsync(FinalQuerySuccess,FinalQueryFailure);
+                  }
+            }
+          },
+          ()=>{
+            deferred.reject()
+          }
+    )
+
+    return deferred.promise();
+
+      function FinalQuerySuccess(sender, args) {
+        // console.log('success')
+        deferred.resolve(true)
+      }
+
+      function FinalQueryFailure(sender, args) {
+        // console.log('fail')
+        deferred.reject()
+        // console.log('Failed' + args.get_message() + '\n' + args.get_stackTrace());
+      }
+  }
+
+  static UpdateContractContentTypeById(id,name){
+    var deferred = $.Deferred();
+
+    var oSiteContentTypes:SP.ContentTypeCollection, clientContext:SP.ClientContext;
+    
+    clientContext = new SP.ClientContext();
+    var web = clientContext.get_web();
+
+    oSiteContentTypes = web.get_contentTypes();
+
+    clientContext.load(oSiteContentTypes)
+
+    clientContext.executeQueryAsync(
+      ()=>{
+            var oEnumerator = oSiteContentTypes.getEnumerator();
+    
+            var oContentType;
+
+            // Counter variable to be used to break below loop
+            var counter = 0;
+        
+            while (oEnumerator.moveNext()) {
+                // This line of codde is written to break the loop
+                if (counter == 1) {
+                    break;
+                }
+        
+                oContentType = oEnumerator.get_current();
+        
+                // Specify the Parent Content Type Name here
+                if (oContentType.get_name() == id) {
+                    counter += 1;
+        
+                    // New Content Type Name
+                    oContentType.set_name(name);
+                    oContentType.update();
+        
+                    //Load Client Context and Execute the batch
+                    clientContext.load(oContentType);
+        
+                    return  clientContext.executeQueryAsync(FinalQuerySuccess,FinalQueryFailure);
+                  }
+            }
+          },
+          ()=>{
+            deferred.reject()
+          }
+    )
+
+    return deferred.promise();
+
+      function FinalQuerySuccess(sender, args) {
+        // console.log('success')
+        deferred.resolve(true)
+      }
+
+      function FinalQueryFailure(sender, args) {
+        // console.log('fail')
+        deferred.reject()
+        // console.log('Failed' + args.get_message() + '\n' + args.get_stackTrace());
+      }
+  }
+
   static UpdateContractData(payload,id:number){
       return myWeb.lists.getByTitle(CONTRACTS)
         .items.getById(id).update(payload);
   }
+
+
 
  
 
