@@ -571,6 +571,7 @@ declare interface ContractFormView {
   status:"SAVED" | "NEW" | "EDIT"
   relateddocs:any[];
   contractfile?:any;
+  comments?:string;
   validationResult?:ValidationResult
 }
 
@@ -593,6 +594,7 @@ declare interface ContractFormState {
   selectedCounterPartyId?:number;
   upFiles:File[];
   upDocs:any[];
+  comments?:string;
   relatedDocs:RelatedDocs[];
   issaving:boolean;
   status:"SAVED" | "NEW" | "EDIT"
@@ -614,6 +616,7 @@ declare interface SPContractData {
   EffectiveDate:string;
   ExpiryDate:string;
   ContentType:any;
+  OData__Comments:string;
 }
 
 declare interface CounterPartyControlState {

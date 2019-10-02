@@ -10,7 +10,7 @@ import * as ContractActions from "../../actions/contract";
 import EntityDropdown from "../EntityDropdown";
 import ContractClassificationDropdown from "../Classification";
 import SupplierDropdown from "../SupplierDropdown";
-import { EmptyReactSelectValue, DayPickerStrings, pagePath, OwnerGroup } from "../../constants/config";
+import { EmptyReactSelectValue, DayPickerStrings, pagePath, OwnerGroup, Others, Vendor, Customer } from "../../constants/config";
 import { ReactSelectValue, CounterParty, AppConfig, ContractFormView, ContractFormState, CounterPartyControlState, AppProfile } from "../../../types/models";
 import CustomerDropdown from "../CustomerDropdown";
 import ContractCategoryDropdown from "../ContractCategory";
@@ -202,7 +202,10 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 counterparties:this.state.counterparties.concat([
                     {
                         Classification:e.classification,
-                        Nature:e.classification == nature,
+                        Nature:e.classification != Vendor  ? nature : {
+                            label:nature,
+                            value:nature
+                        },
                         PartyName:e.value,
 
                     }
@@ -361,7 +364,8 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                 issaving:contract.issaving,
                 status:contract.status,
                 relatedDocs:contract.relateddocs,
-                errors:contract.validationResult.errors
+                errors:contract.validationResult.errors,
+                comments:contract.comments
             } as ContractForm.State
         }
 
@@ -613,6 +617,18 @@ export default class ContractForm extends React.Component<ContractForm.Props,Con
                               files={this.state.upFiles}
                              textmessage={allowMulti ? "Upload Files Here" : "Replace Uploaded File Here"}
                             onChange={this.handleUPFiles}/></div> 
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                    <label className="col-md-2 control-label">Comments</label>
+                        <div className="col-md-4">
+                            <textarea 
+                            value={this.state.comments}
+                            onChange={(e)=>{this.setState({
+                                comments:e.currentTarget.value
+                            })}}
+                            className="form-control" ></textarea>
                         </div>
                     </div>
                     

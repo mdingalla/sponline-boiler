@@ -46,6 +46,7 @@ module.exports = {
   entry: {
     home:'./home.tsx',
     main:'./index.tsx',
+    edit:'./edit.tsx',
     vendor: [
       'react',
       'react-dom',
@@ -207,9 +208,6 @@ module.exports = {
 
       template: './template/app.html', //if main
       filename: 'app.html' //only
-
-   
-
       // template:'./template/ptc.html',
       // filename:'ptcnext.html'
       // template: './template/homepage.html',
@@ -223,6 +221,13 @@ module.exports = {
       inject: 'body',
       template: './template/home.html', //if main
       filename: 'home.html' //only
+    }),
+    new HtmlWebpackPlugin({
+      chunks:["edit","homevendor"],
+      minify:false,
+      inject: 'body',
+      template: './template/edit.html', //if main
+      filename: 'edit.html' //only
     }),
     new ProvidePlugin({
       jQuery: 'jquery',

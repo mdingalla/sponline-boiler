@@ -17,6 +17,10 @@ export const Customer ="Customer";
 export const Entity = "Entity";
 export const Others = "Others";
 
+export const _vendors = "vendors";
+export const _customers = "customers";
+export const _entities = "entities";
+
 export const ContractClassTypes:ContractClassification[] = [
   Vendor,
   Customer,

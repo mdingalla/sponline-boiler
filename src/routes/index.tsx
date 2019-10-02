@@ -6,7 +6,8 @@ import Contract from '../containers/Contract';
 import SearchContainer from '../containers/Search';
 import PlaygroundContainer from '../containers/Playground';
 import ContentTypesContainer from '../containers/ContentTypes';
-import {pagePath, uploadPagePath,searchPagePath} from '../constants/config';
+import CounterPartyContainer from '../containers/CounterParty';
+import {pagePath, uploadPagePath,searchPagePath, _vendors, _customers, _entities} from '../constants/config';
 import { withRouter } from 'react-router';
 import travelWrapper from '../components/TravelHOC';
 // import PettyCashContainer from '../containers/PettyCash/';
@@ -20,6 +21,7 @@ const AppRoutes = ()=>  (
                     <Switch>
                         <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
                         <Route exact path={`${uploadPagePath}`} component={withRouter(travelWrapper(Contract))} />
+                        <Route exact path={`${pagePath}/counterparties`} component={withRouter(travelWrapper(CounterPartyContainer))} />
                         <Route exact path={`${pagePath}/contenttypes`} component={withRouter(travelWrapper(ContentTypesContainer))} />
                         <Route exact path={`${searchPagePath}`} component={withRouter(travelWrapper(SearchContainer))} />
                         <Route exact path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(Contract))} />

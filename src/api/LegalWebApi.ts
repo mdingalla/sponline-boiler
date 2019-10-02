@@ -432,17 +432,17 @@ class LegalWebApi {
       .items.filter(filter).get()
   }
 
-  static GetIPXEntities(filter){
+  static GetIPXEntities(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.filter(`ClassificationId eq 3 ${filter ? ` and (${filter})`:""}` ).get()
   }
 
-  static GetCustomers(filter){
+  static GetCustomers(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.filter(`ClassificationId eq 1 ${filter ? ` and (${filter})`:""}` ).get()
   }
 
-  static GetVendors(filter){
+  static GetVendors(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.filter(`ClassificationId eq 2 ${filter ? ` and (${filter})`:""}` ).get()
   }
@@ -489,6 +489,9 @@ class LegalWebApi {
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
       .items.getById(id).get();
   }
+
+
+  
 
   static GetCounterPartiesByParentId(id){
     return myWeb.lists.getByTitle(CONTRACTCOUNTERPARTIES)

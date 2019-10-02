@@ -183,6 +183,7 @@ export function CreateOrUpdateContract(payload:ContractFormState,history:H.Histo
                                     ContractClassificationId:spClassification.Id,
                                     EffectiveDate:payload.effectiveDate ? moment(payload.effectiveDate).toISOString() : null,
                                     ExpiryDate:payload.expiryDate ? moment(payload.expiryDate).toISOString() : null,
+                                    OData__Comments:payload.comments || ''
                                 }).then((item)=>{
                                     
                                     // console.log(item)
@@ -275,6 +276,7 @@ async function UpdateContractData(payload:ContractFormState,plantMaster,spClassi
             ContractClassificationId:spClassification.Id,
             EffectiveDate:payload.effectiveDate ? moment(payload.effectiveDate).toISOString() : null,
             ExpiryDate:payload.expiryDate ? moment(payload.expiryDate).toISOString() : null,
+            OData__Comments:payload.comments || ''
         },payload.id
     )
     await LegalWebApi.ContractCheckInOut(payload.id,true)
@@ -347,6 +349,7 @@ export function GetContract(id){
                         contractfile:contractfile,
                         relateddocs:relatedcontracts,
                         owner:owner,
+                        comments:spContract.OData__Comments,
                         status:"EDIT",
                         contractingEntity:{
                             // value:spContract.EntityId.toString(),
