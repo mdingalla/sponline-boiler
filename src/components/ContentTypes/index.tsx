@@ -2,9 +2,9 @@ import * as React from 'react';
 import Swal from 'sweetalert2'
 import * as Modal from "react-bootstrap/lib/Modal";
 import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
 const { SearchBar, ClearSearchButton } = Search;
-// const { ExportCSVButton } = CSVExport;
+const { ExportCSVButton } = CSVExport;
 
 import paginationFactory from "react-bootstrap-table2-paginator";
 
@@ -228,7 +228,6 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
                 <ToolkitProvider
                 keyField='StringId' data={this.state.data} columns={columns(this.props,this.state,this)} 
                 striped hover condensed
-                pagination={ paginationFactory(BootstrapTableOptions) }
                 search>
                     {
                         props => (
@@ -237,9 +236,11 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
                                 <ClearSearchButton { ...props.searchProps } />
                                 <hr />
                                 <BootstrapTable 
+                                 pagination={ paginationFactory(BootstrapTableOptions) }
                                 { ...props.baseProps }
+                               
                                 />
-                                {/* <ExportCSVButton { ...props.csvProps }>CSV Export</ExportCSVButton> */}
+                                <ExportCSVButton { ...props.csvProps }>CSV Export</ExportCSVButton>
                             </div>
                         )
                     }

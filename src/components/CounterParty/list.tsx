@@ -1,7 +1,9 @@
 import * as React from 'react';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-
+import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
+const { SearchBar, ClearSearchButton } = Search;
+const { ExportCSVButton } = CSVExport;
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 
@@ -109,9 +111,32 @@ export  class CounterPartyList extends React.Component<CounterPartyList.Props,Co
 
     render(){
         return <div>
+              <ToolkitProvider
+                 keyField='Id' data={this.state.data} columns={columns(this.props)} 
+                striped hover condensed
+                >
+                    {
+                        props => (
+                            <div>
+                                <BootstrapTable 
+                                 pagination={ paginationFactory({
+                                    BootstrapTableOptions,
+                                    sizePerPageList: [{
+                                        text: '10', value: 10
+                                      }, {
+                                        text: '50', value: 50
+                                      }]
+                                }) }
+                                { ...props.baseProps }
+                                
+                                />
+                                <ExportCSVButton { ...props.csvProps }>CSV Export</ExportCSVButton>
+                            </div>
+                        )
+                    }
+                </ToolkitProvider>
 
-
-            <BootstrapTable 
+            {/* <BootstrapTable 
             keyField='Id' data={this.state.data} columns={columns(this.props)} 
             striped hover condensed
             // expandRow={expandRow}
@@ -124,7 +149,7 @@ export  class CounterPartyList extends React.Component<CounterPartyList.Props,Co
                   }, {
                     text: '50', value: 50
                   }]
-            }) } />
+            }) } /> */}
 
             <div>
 

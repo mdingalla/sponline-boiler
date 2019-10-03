@@ -97,6 +97,7 @@
     "console-feed": "^2.8.8",
     "currency-symbol-map": "^4.0.4",
     "es6-promise": "^4.1.1",
+    "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.1",
     "inject-html-webpack-plugin": "0.0.39",
     "jspdf": "^1.5.3",
