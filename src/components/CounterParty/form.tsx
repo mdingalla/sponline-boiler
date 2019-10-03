@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as Modal from "react-bootstrap/lib/Modal";
 import { ContractClassification } from '../../../types/models';
 import { Vendor, Customer, Entity } from '../../constants/config';
+import ParentCounterPartyDropdown from '../ParentCounterPartyDropdown';
+import RegionDropdown from '../RegionDropdown';
 
 
 export namespace CounterPartyModalForm {
@@ -11,13 +13,15 @@ export namespace CounterPartyModalForm {
         OnCancel:()=>void;
         formdata:CounterPartyModalForm.State;
         isEdit:boolean;
+        OnChange:(e:CounterPartyModalForm.State)=>void;
     }
     export interface State {
         id?:number;
-        parent?:string;
+        parent?:any;
         businessType?:string;
         counterparty:string;
         code?:string;
+        region?:any;
     }
 }
 
@@ -34,7 +38,8 @@ export class CounterPartyModalForm extends React.Component<CounterPartyModalForm
                 businessType:this.props.formdata.businessType || '',
                 code:this.props.formdata.code || '',
                 counterparty:this.props.formdata.counterparty || '',
-                parent:this.props.formdata.parent || ''
+                parent:this.props.formdata.parent || '',
+                region:this.props.formdata.region || ''
             }
         }
 
@@ -43,11 +48,11 @@ export class CounterPartyModalForm extends React.Component<CounterPartyModalForm
         }
 
         static getDerivedStateFromProps(props:CounterPartyModalForm.Props,state:CounterPartyModalForm.State){
-            if(props.formdata != state && props.isEdit){
-                return {
-                    ...props.formdata
-                } as CounterPartyModalForm.State
-            }
+            // if(props.formdata != state && !props.isEdit){
+            //     return {
+            //         ...props.formdata
+            //     } as CounterPartyModalForm.State
+            // }
             return null;
         }
 
@@ -65,13 +70,28 @@ export class CounterPartyModalForm extends React.Component<CounterPartyModalForm
                 </div>
             </div> : null;
 
+            const regionDropDown = this.props.classification == Entity ? <div className="form-group">
+            <label className="control-label col-md-4">
+                    Region
+            </label>
+            <div className="col-md-8">
+                 <RegionDropdown value={this.state.region} onChange={(e)=>this.setState({
+                        region:e
+                    })
+                    } />
+            </div>
+        </div>  : null;
+
 
             const Parent = this.props.classification==Entity || this.props.classification == Customer ? <div className="form-group">
                 <label className="control-label col-md-4">
                     Parent
                 </label>
                 <div className="col-md-8">
-                   
+                <ParentCounterPartyDropdown value={this.state.parent} onChange={(e)=>this.setState({
+                            parent:e
+                        })
+                        } />
                 </div>
             </div> : null;
 
@@ -83,7 +103,7 @@ export class CounterPartyModalForm extends React.Component<CounterPartyModalForm
 
                             <div className="form-group">
                                 <label className="control-label col-md-4">
-                                    Name:
+                                    Name:*
                                 </label>
                                 <div className="col-md-8">
                                     <input type="text" className="form-control"
@@ -106,6 +126,8 @@ export class CounterPartyModalForm extends React.Component<CounterPartyModalForm
                             </div>
 
                             {businessType}
+
+                            {regionDropDown}
 
 
                     </div>

@@ -7,6 +7,9 @@ export const homePagePath = `${_spPageContextInfo.webServerRelativeUrl}/SitePage
 export const pagePath =
   _spPageContextInfo.webServerRelativeUrl + "/SitePages/MainApp.aspx";
 
+  export const SidePagePath =
+  _spPageContextInfo.webServerRelativeUrl + "/SitePages/SideApp.aspx";
+
 export const OwnerGroup =  "Legal Repository Owners";
 
 export const uploadPagePath = `${pagePath}/new`
@@ -16,10 +19,12 @@ export const Vendor = "Vendor";
 export const Customer ="Customer";
 export const Entity = "Entity";
 export const Others = "Others";
+export const Parent = "Parent";
 
 export const _vendors = "vendors";
 export const _customers = "customers";
 export const _entities = "entities";
+export const _parent = "parent";
 
 export const ContractClassTypes:ContractClassification[] = [
   Vendor,
@@ -28,7 +33,7 @@ export const ContractClassTypes:ContractClassification[] = [
   Others
 ]
 
-
+export const Regions = ['Americas','Asia','China','Europe','South East Asia']
 
 export const DayPickerStrings = {
   months: [
@@ -123,4 +128,15 @@ export const BootstrapTableOptions = {
 
 export const EmptyReactSelectValue:ReactSelectValue = {
   label:'',value:''
+}
+
+
+export const SwalDeleteOptions = {
+  title:'Confirm Delete',
+  titleText:`Record will be deleted.`,
+  type:'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, delete it!'
 }

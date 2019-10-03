@@ -21,7 +21,7 @@ const AppRoutes = ()=>  (
                     <Switch>
                         <Route exact path={pagePath} component={withRouter(travelWrapper(Dashboard))} />
                         <Route exact path={`${uploadPagePath}`} component={withRouter(travelWrapper(Contract))} />
-                        <Route exact path={`${pagePath}/counterparties`} component={withRouter(travelWrapper(CounterPartyContainer))} />
+                        {/* <Route exact path={`${pagePath}/counterparties`} component={withRouter(travelWrapper(CounterPartyContainer))} /> */}
                         <Route exact path={`${pagePath}/contenttypes`} component={withRouter(travelWrapper(ContentTypesContainer))} />
                         <Route exact path={`${searchPagePath}`} component={withRouter(travelWrapper(SearchContainer))} />
                         <Route exact path={`${pagePath}/edit/:id`} component={withRouter(travelWrapper(Contract))} />

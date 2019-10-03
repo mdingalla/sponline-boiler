@@ -93,6 +93,7 @@ const SearchResultPanel = (props:SearchResultPanel.Props)=>{
     return <div className="row">
 <BootstrapTable 
             keyField='Id' data={props.data} columns={columns(props)} 
+            striped hover condensed
             // expandRow={expandRow}
             // rowEvents={ this.rowEvents }
             // selectRow={selectRow}

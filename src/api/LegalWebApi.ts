@@ -423,28 +423,53 @@ class LegalWebApi {
         .items.getById(id).update(payload);
   }
 
-
+  static AddUpdateCounterParty(payload,id=null){
+    if(id){
+      return myWeb.lists.getByTitle(COUNTERPARTYMASTER).items.getById(id).update(payload);
+    }
+    else
+    {
+      return myWeb.lists.getByTitle(COUNTERPARTYMASTER).items.add(payload)
+    }
+      
+  }
+  static AddUpdateParentCounterParty(payload,id=null){
+    if(id){
+      return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER).items.getById(id).update(payload);
+    }
+    else
+    {
+      return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER).items.add(payload)
+    }
+      
+  }
 
  
 
-  static GetParentConterParty(filter){
+  static GetParentConterParty(filter=""){
     return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
-      .items.filter(filter).get()
+      .items.filter(filter).getAll()
+  }
+
+  static GetParentConterPartyId(id){
+    return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
+      .items.getById(id).get()
   }
 
   static GetIPXEntities(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 3 ${filter ? ` and (${filter})`:""}` ).get()
+      .items
+      .filter(`ClassificationId eq 3 ${filter ? ` and (${filter})`:""}` ).getAll()
   }
 
   static GetCustomers(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 1 ${filter ? ` and (${filter})`:""}` ).get()
+      .items.filter(`ClassificationId eq 1 ${filter ? ` and (${filter})`:""}` ).getAll()
   }
 
   static GetVendors(filter=""){
     return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
-      .items.filter(`ClassificationId eq 2 ${filter ? ` and (${filter})`:""}` ).get()
+      .items.filter(`ClassificationId eq 2 ${filter ? ` and (${filter})`:""}` ).getAll()
   }
 
 
@@ -490,9 +515,11 @@ class LegalWebApi {
       .items.getById(id).get();
   }
 
-
+  static GetParentCounterPartyMaster(id){
+    return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
+      .items.getById(id).get();
+  }
   
-
   static GetCounterPartiesByParentId(id){
     return myWeb.lists.getByTitle(CONTRACTCOUNTERPARTIES)
       .items.filter(`ContractRefId eq ${id}`)
@@ -581,6 +608,15 @@ class LegalWebApi {
     });
   }
 
+  static DeleteCounterPartyMaster(id){
+    return myWeb.lists.getByTitle(COUNTERPARTYMASTER)
+      .items.getById(id).delete();
+  }
+
+  static DeleteParentCounterPartyMaster(id){
+    return myWeb.lists.getByTitle(PARENTCOUNTERPARTYMASTER)
+      .items.getById(id).delete();
+  }
 
   static DeleteCounterParty(spId){
   

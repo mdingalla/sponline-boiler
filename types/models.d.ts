@@ -478,10 +478,11 @@ type PTCMassUploadStatus =
   declare type Customer = "Customer";
   declare type Vendor = "Vendor";
   declare type Entity = "Entity";
-  declare type Others = "Others"
+  declare type Others = "Others";
+  declare type Parent ="Parent";
   
   type ContractClassification =
-   Customer | Vendor | Entity | Others
+   Customer | Vendor | Entity | Others | Parent
 
 
 

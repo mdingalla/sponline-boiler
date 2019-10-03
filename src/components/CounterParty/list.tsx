@@ -30,18 +30,11 @@ const columns = (props:CounterPartyList.Props)=> [
                     Edit
                 </button>
 
-                {/* <button type="button" 
+                <button type="button" 
                 onClick={()=>{
-                    LegalWebApi.DeleteContractType(row.StringId)
-                        .then((success)=>{
-                            // console.log(success);
-                            app.refresh();
-                        }).catch((fail)=>{
-                            // console.log(fail)
-                            MySwal.fire('warning','Cannot delete the selected Content Type','warning')
-                        })
+                   props.OnDelete(row.Id)
                 }}
-                className="btn btn-danger">Delete</button> */}
+                className="btn btn-danger">Delete</button>
 
                
             </div>)
@@ -53,6 +46,8 @@ export namespace CounterPartyList {
     export interface Props {
         classification:ContractClassification;
         OnToggleEdit:(id:number)=>void;
+        OnDelete:(id:number)=>void;
+        modal:boolean;
     }
 
     export interface State {
@@ -83,7 +78,9 @@ export  class CounterPartyList extends React.Component<CounterPartyList.Props,Co
             case 'Vendor':
                     query = LegalWebApi.GetVendors();
                     break;
-        
+            case "Parent":
+                    query = LegalWebApi.GetParentConterParty();
+                    break;
             default:
                 query = LegalWebApi.GetIPXEntities();
                 break;
@@ -102,6 +99,10 @@ export  class CounterPartyList extends React.Component<CounterPartyList.Props,Co
         this.isCancelled = true;
     }
 
+    componentDidUpdate(){
+        this.refresh();
+    }
+
     componentDidMount(){
         this.refresh();
     }
@@ -112,6 +113,7 @@ export  class CounterPartyList extends React.Component<CounterPartyList.Props,Co
 
             <BootstrapTable 
             keyField='Id' data={this.state.data} columns={columns(this.props)} 
+            striped hover condensed
             // expandRow={expandRow}
             // rowEvents={ this.rowEvents }
             // selectRow={selectRow}

@@ -2,6 +2,10 @@ import * as React from 'react';
 import Swal from 'sweetalert2'
 import * as Modal from "react-bootstrap/lib/Modal";
 import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+const { SearchBar, ClearSearchButton } = Search;
+// const { ExportCSVButton } = CSVExport;
+
 import paginationFactory from "react-bootstrap-table2-paginator";
 
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -220,12 +224,27 @@ class ContentTypesPage extends React.Component<ContentTypesPage.Props,ContentTyp
 
         return <div className="col-md-12">
                 {MyModal}
-        <BootstrapTable 
-            keyField='StringId' data={this.state.data} columns={columns(this.props,this.state,this)} 
-            // expandRow={expandRow}
-            // rowEvents={ this.rowEvents }
-            // selectRow={selectRow}
-            pagination={ paginationFactory(BootstrapTableOptions) } />
+
+                <ToolkitProvider
+                keyField='StringId' data={this.state.data} columns={columns(this.props,this.state,this)} 
+                striped hover condensed
+                pagination={ paginationFactory(BootstrapTableOptions) }
+                search>
+                    {
+                        props => (
+                            <div>
+                                <SearchBar { ...props.searchProps } />
+                                <ClearSearchButton { ...props.searchProps } />
+                                <hr />
+                                <BootstrapTable 
+                                { ...props.baseProps }
+                                />
+                                {/* <ExportCSVButton { ...props.csvProps }>CSV Export</ExportCSVButton> */}
+                            </div>
+                        )
+                    }
+                </ToolkitProvider>
+        
 
             <div>
                 <button type="button" 
