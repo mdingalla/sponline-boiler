@@ -48,7 +48,7 @@
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^4.0.0-alpha",
     "html-webpack-template": "^6.2.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.9.3",
     "node-sp-auth": "^2.5.7",
